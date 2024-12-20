@@ -10,11 +10,21 @@ export default async function ProtectedPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: current_alarm, error } = await supabase
+  let { data: current_alarm, error } = await supabase
   .from('Alarms')
   .select('*')
   .eq('status', 2)
   .range(0,0)
+
+  if (error) {
+    console.error('Error fetching alarm:', error.message);
+  } else if (current_alarm && current_alarm.length > 0) {
+    // current_alarm är en array med max 1 objekt
+    current_alarm = current_alarm[0];
+    console.log('First alarm row:', current_alarm);
+  } else {
+    console.log('No alarms found with status 2.');
+  }
 
   if (!user) {
     return redirect("/sign-in");
@@ -24,7 +34,7 @@ export default async function ProtectedPage() {
     <div className="flex-1 w-full flex flex-col gap-12">
 
 
-      {JSON.stringify(current_alarm, null, 2)}
+      {JSON.stringify(current_alarm.description, null, 2)}
 
       <div className="w-full">
         <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
