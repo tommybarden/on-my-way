@@ -1,9 +1,20 @@
 import FetchDataSteps from "@/components/tutorial/fetch-data-steps";
 import { createClient } from "@/utils/supabase/server";
+import { PostgrestError } from "@supabase/supabase-js";
 import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 
 export default async function ProtectedPage() {
+
+type Alarm = {
+  id: number,
+  created_at: string,
+  description: string,
+  location: string,
+  units: string,
+  status: number
+}
+
   const supabase = await createClient();
 
   const {
@@ -11,19 +22,14 @@ export default async function ProtectedPage() {
   } = await supabase.auth.getUser();
 
   let { data: current_alarm, error } = await supabase
-  .from('Alarms')
+  .from<string, Alarm>('Alarms')
   .select('*')
   .eq('status', 2)
-  .range(0,0)
+  .limit(1)
+  .single()
 
   if (error) {
     console.error('Error fetching alarm:', error.message);
-  } else if (current_alarm && current_alarm.length > 0) {
-    // current_alarm är en array med max 1 objekt
-    current_alarm = current_alarm[0];
-    console.log('First alarm row:', current_alarm);
-  } else {
-    console.log('No alarms found with status 2.');
   }
 
   if (!user) {
@@ -33,8 +39,12 @@ export default async function ProtectedPage() {
   return (
     <div className="flex-1 w-full flex flex-col gap-12">
 
-
-      {JSON.stringify(current_alarm.description, null, 2)}
+      {current_alarm && (
+        <div>
+          <strong>Status: {current_alarm.status}</strong>
+          <div>Beskrivning: {current_alarm.description}</div>
+        </div>
+      )}
 
       <div className="w-full">
         <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
