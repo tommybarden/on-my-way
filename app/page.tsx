@@ -1,16 +1,16 @@
-import Hero from "@/components/hero";
-import ConnectSupabaseSteps from "@/components/tutorial/connect-supabase-steps";
-import SignUpUserSteps from "@/components/tutorial/sign-up-user-steps";
-import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 
 export default async function Index() {
   return (
-    <>
-      <Hero />
-      <main className="flex-1 flex flex-col gap-6 px-4">
-        <h2 className="font-medium text-xl mb-4">Next steps</h2>
-        {hasEnvVars ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
+      <>
+      <main className="flex-1 flex flex-col gap-8 px-4">
+          <div className="text-center">
+              <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-6xl">On My Way</h1>
+              <p className="mt-8 text-pretty text-lg font-medium sm:text-xl/8">
+                  Kvittera inkommande larm, följ utryckningar i realtid och få viktig information om pågående insatser. Effektiv samordning börjar här – din insats gör skillnad!
+              </p>
+          </div>
       </main>
-    </>
-  );
+</>
+)
+    ;
 }
