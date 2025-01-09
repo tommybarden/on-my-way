@@ -2,9 +2,6 @@
 import {createClientComponentClient} from "@supabase/auth-helpers-nextjs";
 import {useEffect} from "react";
 
-/**
- * ログイン後のマイページ
- */
 const MyPage = () => {
     const supabase = createClientComponentClient();
     useEffect(() => {

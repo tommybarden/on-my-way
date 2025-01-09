@@ -6,8 +6,6 @@ import {GeistSans} from "geist/font/sans";
 import {ThemeProvider} from "next-themes";
 import Link from "next/link";
 import "./globals.css";
-import {ModalType} from "@/components/modal/modalType";
-import ModalCore from "@/components/modal/modalCore";
 
 const defaultUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
@@ -41,7 +39,6 @@ export default function RootLayout({
                                 <Link href={"/"} className="text-2xl">On my way</Link>
                             </div>
                             {!hasEnvVars ? <EnvVarWarning/> : <HeaderAuth/>}
-                            <ModalCore modalType={ModalType.SMSAuth}></ModalCore>
                         </div>
                     </nav>
                     <div className="flex flex-col gap-20 max-w-5xl p-5">

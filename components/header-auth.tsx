@@ -25,7 +25,7 @@ export default async function AuthButton() {
             </Badge>
           </div>
           <div className="flex gap-2">
-            <Button
+{/*             <Button
               asChild
               size="sm"
               variant={"outline"}
@@ -42,6 +42,15 @@ export default async function AuthButton() {
               className="opacity-75 cursor-none pointer-events-none"
             >
               <Link href="/sign-up">Skapa konto</Link>
+            </Button> */}
+            <Button
+              asChild
+              size="sm"
+              variant={"outline"}
+              disabled
+              className="opacity-75 cursor-none pointer-events-none"
+            >
+              <Link href="/otp">Logga in</Link>
             </Button>
           </div>
         </div>
@@ -59,11 +68,14 @@ export default async function AuthButton() {
     </div>
   ) : (
     <div className="flex gap-2">
-      <Button asChild size="sm" variant={"outline"}>
+{/*       <Button asChild size="sm" variant={"outline"}>
         <Link href="/sign-in">Logga in</Link>
       </Button>
       <Button asChild size="sm" variant={"default"}>
         <Link href="/sign-up">Skapa konto</Link>
+      </Button> */}
+      <Button asChild size="sm" variant={"outline"}>
+        <Link href="/otp">Logga in</Link>
       </Button>
     </div>
   );

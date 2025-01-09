@@ -4,6 +4,35 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
+
+export const signInWithOtp = async (formData: FormData) => {
+  const phone = formData.get("phone") as string;
+  const otp = formData.get("otp") as string;
+  const supabase = createClientComponentClient()
+
+  const { data: { session }, error } = await supabase.auth.verifyOtp({ phone: phone, token: otp, type: "sms" });
+
+  if (error) {
+    console.log(error)
+    return encodedRedirect("error", "/sign-in", error.message);
+  }
+
+  return redirect("/protected");
+};
+
+export const getOTP = async (phone: string) => {
+  const supabase = createClientComponentClient()
+
+  try {
+    const { error } = await supabase.auth.signInWithOtp({ phone });
+    if (error) throw error;
+    // Otp sent successfully
+  } catch (error: any) {
+    console.error('Error sending OTP:', error.message);
+  }
+}
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -132,3 +161,4 @@ export const signOutAction = async () => {
   await supabase.auth.signOut();
   return redirect("/sign-in");
 };
+
