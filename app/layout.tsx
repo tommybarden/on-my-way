@@ -11,28 +11,38 @@ const defaultUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : "http://localhost:3000";
 
-export const metadata = { 
+export const metadata = {
     // https://nextjs.org/docs/app/api-reference/functions/generate-metadata#basic-fields
     metadataBase: new URL(defaultUrl),
     title: "On my way",
     description: "Rescue service acknowledge app",
     creator: "Tommy Bärdén",
-    authors: [{ name: 'Tommy', url: 'https://dalkarby.com' }],
+    authors: [{name: 'Tommy', url: 'https://dalkarby.com'}],
+    robots: {
+        index: false,
+        follow: false,
+        nocache: true,
+    },
     appleWebApp: {
         title: 'On my way',
         statusBarStyle: 'black-translucent',
+    },
     icons: {
-        icon: '/icons/logo-16.png',
-        shortcut: '/icons/logo-48.png',
-        apple: '/icons/logo-96.png',
+        icon: '/icons/favicon.ico',
+        shortcut: '/icons/favicon.ico',
+        apple: [
+            {url: '/icons/apple-touch-icon.png'},
+            {url: '/icons/logo-152.png', sizes: '152x152', type: 'image/png'},
+            {url: '/icons/logo-180.png', sizes: '180x180', type: 'image/png'},
+            {url: '/icons/logo-192.png', sizes: '192x192', type: 'image/png'},
+        ],
         other: {
-          rel: 'apple-touch-icon-precomposed',
-          url: '/apple-touch-icon-precomposed.png',
+            rel: 'apple-touch-icon-precomposed',
+            url: '/icons/logo-180.png',
         }
-      },
     },
 };
-    /*
+/*
 <meta name="application-name" content="PWA App" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -80,7 +90,7 @@ export const metadata = {
 <link rel='apple-touch-startup-image' href='/images/apple_splash_750.png' sizes='750x1334' />
 <link rel='apple-touch-startup-image' href='/images/apple_splash_640.png' sizes='640x1136' />
 -->
-    */
+*/
 
 
 export default function RootLayout({
