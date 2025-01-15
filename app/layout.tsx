@@ -6,10 +6,20 @@ import {GeistSans} from "geist/font/sans";
 import {ThemeProvider} from "next-themes";
 import Link from "next/link";
 import "./globals.css";
+import {Viewport} from "next";
 
 const defaultUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : "http://localhost:3000";
+
+export const viewport: Viewport = {
+    themeColor: "#000000",
+    initialScale: 1,
+    width: "device-width",
+    maximumScale: 1,
+    userScalable: false,
+    minimumScale: 1,
+};
 
 export const metadata = {
     // https://nextjs.org/docs/app/api-reference/functions/generate-metadata#basic-fields
