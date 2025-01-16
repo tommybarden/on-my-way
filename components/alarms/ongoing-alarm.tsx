@@ -1,4 +1,4 @@
-import { prettyDate } from "@/lib/utils";
+import { prettyDate } from "@/utils/helpers";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function OngoingAlarm(props: any) {
