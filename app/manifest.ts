@@ -11,10 +11,10 @@ export default function manifest(): MetadataRoute.Manifest {
         "scope": "/",
         "start_url": "/profile",
         "icons": [
-            {"src": "/logo-128.png", "type": "image/png", "sizes": "128x128"},
-            {"src": "/logo-192.png", "type": "image/png", "sizes": "192x192"},
-            {"src": "/logo-256.png", "type": "image/png", "sizes": "256x256"},
-            {"src": "/logo-512.png", "type": "image/png", "sizes": "512x512"}
+            {"src": "/icons/logo-128.png", "type": "image/png", "sizes": "128x128"},
+            {"src": "/icons/logo-192.png", "type": "image/png", "sizes": "192x192"},
+            {"src": "/icons/logo-256.png", "type": "image/png", "sizes": "256x256"},
+            {"src": "/icons/logo-512.png", "type": "image/png", "sizes": "512x512"}
         ]
     }
 }
