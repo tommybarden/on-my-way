@@ -11,8 +11,9 @@ export default function ConfirmButtons(props: any) {
         alert('Larm ' + id + ', ' + minutes + 'minuter')
     }
 
-    useEffect(() => {
+    const updateETA = async () => {
         if (navigator.geolocation) {
+            setLoading(true);
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
                     const coordsArray = [pos.coords.longitude, pos.coords.latitude];
@@ -26,14 +27,29 @@ export default function ConfirmButtons(props: any) {
                     console.error("Error fetching location:", err)
                     setLoading(false);
                 }
-            ,{
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 120 * 1000
-            });
+                , {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 120 * 1000
+                });
         } else {
             setLoading(false);
         }
+    }
+
+    const handleVisibilityChange = () => {
+        if (!document.hidden) {
+            updateETA();
+        }
+    };
+
+    useEffect(() => {
+        updateETA();
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
     }, []);
 
     return (
@@ -41,13 +57,23 @@ export default function ConfirmButtons(props: any) {
             <div className="flex w-full flex-col gap-5">
                 <strong>Kvittera</strong>
 
-                <Button onClick={() => { confirmAlarm(props.alarmId, ETA ?? 0)}} type="button" variant={"destructive"} size={"lg"} disabled={loading || ETA === null}>
+                <Button onClick={() => {
+                    confirmAlarm(props.alarmId, ETA ?? 0)
+                }} type="button" variant={"destructive"} size={"lg"} disabled={loading || ETA === null}>
                     <p className="text-2xl">{loading ? "Beräknar körtid..." : ETA ? `ETA: ${ETA} minuter` : 'Kunde inte hämta position'}</p>
                 </Button>
-                <Button onClick={() => { confirmAlarm(props.alarmId, 5)}} type="button" variant={"destructive"} size={"lg"}><p className="text-2xl">5 min</p></Button>
-                <Button onClick={() => { confirmAlarm(props.alarmId, 10)}} type="button" variant={"destructive"} size={"lg"}><p className="text-2xl">10 min</p></Button>
-                <Button onClick={() => { confirmAlarm(props.alarmId, 15)}} type="button" variant={"destructive"} size={"lg"}><p className="text-2xl">15 min</p></Button>
-                <Button onClick={() => { confirmAlarm(props.alarmId, -1)}} type="button" variant={"secondary"} size={"lg"}><p className="text-2xl">Far direkt</p></Button>
+                <Button onClick={() => {
+                    confirmAlarm(props.alarmId, 5)
+                }} type="button" variant={"destructive"} size={"lg"}><p className="text-2xl">5 min</p></Button>
+                <Button onClick={() => {
+                    confirmAlarm(props.alarmId, 10)
+                }} type="button" variant={"destructive"} size={"lg"}><p className="text-2xl">10 min</p></Button>
+                <Button onClick={() => {
+                    confirmAlarm(props.alarmId, 15)
+                }} type="button" variant={"destructive"} size={"lg"}><p className="text-2xl">15 min</p></Button>
+                <Button onClick={() => {
+                    confirmAlarm(props.alarmId, -1)
+                }} type="button" variant={"secondary"} size={"lg"}><p className="text-2xl">Far direkt</p></Button>
             </div>
         </div>
     )
