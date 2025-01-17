@@ -2,14 +2,11 @@
 import {Button} from "@/components/ui/button";
 import {useEffect, useState} from "react";
 import {getStationETA} from "@/utils/helpers";
+import { confirmAlarm } from "@/services/alarms";
 
 export default function ConfirmButtons(props: any) {
     const [ETA, setETA] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
-
-    const confirmAlarm = (id: number, minutes: number) => {
-        alert('Larm ' + id + ', ' + minutes + 'minuter')
-    }
 
     const updateETA = async () => {
         if (navigator.geolocation) {

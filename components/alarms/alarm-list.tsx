@@ -1,24 +1,16 @@
 import {prettyDate} from "@/utils/helpers";
 import {createClient} from "@/utils/supabase/server";
+import { Alarm } from "@/utils/types";
 
 export default async function AlarmList() {
 
     const supabase = await createClient();
 
-    type Alarm = {
-        id: number,
-        created_at: string,
-        description: string,
-        location: string,
-        units: string,
-        status: number
-    }
-
     let {data: alarms, error} = await supabase
         .from<string, Alarm>('Alarms')
         .select('*')
         .eq('status', 2)
-        .limit(10)//parseInt(limit)
+        .limit(10)
 
     if (!alarms) {
         return false
