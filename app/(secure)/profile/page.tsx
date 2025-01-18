@@ -1,3 +1,4 @@
+import NoAlarmListener from "@/components/alarms/no-alarm-listener";
 import OngoingAlarm from "@/components/alarms/ongoing-alarm";
 import ConfirmButtons from "@/components/confirms/confirm-buttons";
 import ConfirmedList from "@/components/confirms/confirmed-list";
@@ -9,7 +10,9 @@ export default async function ProtectedPage() {
     const current_alarm = await getOngoingAlarm();
     
     if(!current_alarm) {
-        return <div>Inget pågående larm</div>
+        return (
+            <NoAlarmListener/>
+        )
     }
 
     const users = await getAllUsers();

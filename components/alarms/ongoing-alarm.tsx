@@ -3,6 +3,9 @@ import { createClient } from "@/utils/supabase/server";
 
 export default async function OngoingAlarm(props: any) {
 
+    //TODO: Städa upp allt och lägg till en subscription så sidan laddas om när larmet är slut
+    // Larmet borde ta slut en bestämd tid efter att sista person anlänt till station
+    
     const supabase = await createClient();
 
     type Alarm = {

@@ -1,14 +1,12 @@
 'use client'
 
 import { calculateConfirmed, getConfirmed } from "@/services/alarms";
-import { subscribeToConfirmed } from "@/services/subscriptions";
+import { removeSubscription, subscribeToConfirmed } from "@/services/subscriptions";
 import { User } from "@/utils/types";
 import { useEffect, useState } from "react";
 
 export default function ConfirmedList(props: { users: Record<string, User>; alarmId: number; className?: string; }) {
     const [confirmed, setConfirmed] = useState<any[]>([]);
-    //const [timer, setTimer] = useState<any>([]);
-    //const [users, setUsers] = useState<Record<string, User>>({});
     const { users, alarmId, className } = props;
 
     useEffect(() => {
@@ -30,10 +28,6 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
             const newData = payload.new; // Hämta ny data om det finns
             const oldData = payload.old; // Hämta gammal data om det finns
 
-
-            console.log('NEW', newData);
-            console.log('OLD', oldData);
-
             if (newData) {
                 setConfirmed((prevData) => {
                   return calculateConfirmed([...prevData, newData]);
@@ -43,17 +37,7 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
                   return calculateConfirmed(prevData.filter(item => item.id !== oldData.id));
                 });
               }
-            // if (newData) {
-            //     setConfirmed((prevData) => {
-            //         const updatedData = [...prevData, newData]; // Lägg till ny data
-            //         return calculateConfirmed(updatedData); // Eller annan logik för att uppdatera listan
-            //     });
-            // } else if (oldData) {
-            //     setConfirmed((prevData) => {
-            //         const updatedData = prevData.filter(item => item.id !== oldData.id); // Ta bort gammal data
-            //         return calculateConfirmed(updatedData);
-            //     });
-            // }
+
         });
 
         // Interval för att uppdatera nedräkningen varje sekund
@@ -73,8 +57,7 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
 
         // Rensa upp när komponenten tas bort
         return () => {
-            //supabase.removeSubscription(responseSubscription);
-            //supabase.removeSubscription(channel);
+            removeSubscription(subscription)
             clearInterval(interval);  // Rensa intervallet
         };
 
