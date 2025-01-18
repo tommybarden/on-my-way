@@ -56,7 +56,7 @@ export const getConfirmed = async (alarm_id: number) => {
     return responses
 }
 
-export const calculateConfirmed = (responses:{ created_at: string, minutes: number, created_by: string }[]) => {
+export const calculateConfirmed = (responses:{ status: string, created_at: string, minutes: number, created_by: string }[]) => {
     return responses.map((row) => {
         const arrivalTime = new Date(new Date(row.created_at).getTime() - new Date().getTimezoneOffset() * 60000);
         const now = new Date().getTime();

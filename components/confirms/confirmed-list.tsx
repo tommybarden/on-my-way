@@ -70,10 +70,10 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
                     {confirmed.map((confirm, i) => {
                         const user = users[confirm.created_by];  // Hämta användarens data
                         return (
-                            <li key={i} className="flex items-center justify-between p-3">
+                            <li key={i} className="flex items-center justify-between py-3">
                                 <span>{user?.first_name} {user?.last_name}</span>
                                 <span style={{ fontFamily: 'Courier New, monospace' }}>
-                                    {confirm.timeLeft > 0 ? formatTime(confirm.timeLeft) : "Framme!"}
+                                {confirm.timeLeft > 0 ? formatTime(confirm.timeLeft) : confirm.minutes < 0 ? "Far direkt" : "På station"}
                                 </span>
                             </li>
                         );

@@ -22,4 +22,5 @@ export interface ConfirmedResponse {
     created_by: string;
     arrivalTime: Date;
     timeLeft: number;
+    status: string;
   }
