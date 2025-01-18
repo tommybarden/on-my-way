@@ -56,23 +56,41 @@ export const getConfirmed = async (alarm_id: number) => {
     return responses
 }
 
-export const calculateConfirmed = (responses:{ status: string, created_at: string, minutes: number, created_by: string }[]) => {
+export const calculateConfirmed = (responses: { status: string, created_at: string, minutes: number, created_by: string }[]) => {
     return responses.map((row) => {
-        const arrivalTime = new Date(new Date(row.created_at).getTime() - new Date().getTimezoneOffset() * 60000);
-        const now = new Date().getTime();
-        let timeLeft = 0
+        // Skapa en Date-objekt från created_at
+        const createdAt = new Date(row.created_at);
 
-        if(row.minutes >= 0) { //Kommer via station
+        // Justera för tidszonen, om användaren är på väg via station, lägg till minuter
+        const arrivalTime = new Date(createdAt);
+        if (row.minutes >= 0) {
             arrivalTime.setMinutes(arrivalTime.getMinutes() + row.minutes);
-            timeLeft = Math.floor((arrivalTime.getTime() - now) / 1000)
         }
 
-        if (timeLeft < 0) { // Borde va framme
+        // Få aktuell tid i millisekunder
+        const now = Date.now();
+
+        // Beräkna tid kvar i sekunder
+        let timeLeft = Math.floor((arrivalTime.getTime() - now) / 1000);
+
+        // Om användaren borde vara framme (timeLeft < 0), sätt timeLeft till 0
+        if (timeLeft < 0) {
             timeLeft = 0;
         }
-        
+
         return { ...row, arrivalTime, timeLeft };
     })
-    .sort((a, b) => +a.arrivalTime - +b.arrivalTime);
-}
+    .sort((a, b) => {
+        // Först, sortera de med negativa "minutes" först
+        if (a.minutes < 0 && b.minutes >= 0) {
+            return -1; // A åker direkt, sätt A först
+        } else if (a.minutes >= 0 && b.minutes < 0) {
+            return 1; // B åker direkt, sätt B först
+        }
+
+        // Om både A och B har samma "minutes" (eller båda är >= 0 eller båda < 0), sortera efter arrivalTime
+        return +a.arrivalTime - +b.arrivalTime;
+    });
+};
+
 

@@ -73,7 +73,7 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
                             <li key={i} className="flex items-center justify-between py-3">
                                 <span>{user?.first_name} {user?.last_name}</span>
                                 <span style={{ fontFamily: 'Courier New, monospace' }}>
-                                {confirm.timeLeft > 0 ? formatTime(confirm.timeLeft) : confirm.minutes < 0 ? "Far direkt" : "På station"}
+                                {confirm.timeLeft > 0 ? formatTime(confirm.timeLeft) : confirm.minutes < 0 ? "Far direkt 🚙" : "På station 🚒"}
                                 </span>
                             </li>
                         );
