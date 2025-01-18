@@ -49,6 +49,30 @@ export const getConfirmed = async (alarm_id: number) => {
         .order('created_at')
         .eq('alarm_id', alarm_id)
 
-    return responses;
+    if(!responses) {
+        return []
+    }
+
+    return responses
+}
+
+export const calculateConfirmed = (responses:{ created_at: string, minutes: number, created_by: string }[]) => {
+    return responses.map((row) => {
+        const arrivalTime = new Date(new Date(row.created_at).getTime() - new Date().getTimezoneOffset() * 60000);
+        const now = new Date().getTime();
+        let timeLeft = 0
+
+        if(row.minutes >= 0) { //Kommer via station
+            arrivalTime.setMinutes(arrivalTime.getMinutes() + row.minutes);
+            timeLeft = Math.floor((arrivalTime.getTime() - now) / 1000)
+        }
+
+        if (timeLeft < 0) { // Borde va framme
+            timeLeft = 0;
+        }
+        
+        return { ...row, arrivalTime, timeLeft };
+    })
+    .sort((a, b) => +a.arrivalTime - +b.arrivalTime);
 }
 

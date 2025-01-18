@@ -128,7 +128,6 @@ export default function RootLayout({
                                 alt="OMW logo"
                                 width={64}
                                 height={64}
-                                priority
                             />
                             </div>
                             {!hasEnvVars ? <EnvVarWarning/> : <HeaderAuth/>}
