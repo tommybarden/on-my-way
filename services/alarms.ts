@@ -1,4 +1,4 @@
-import { Alarm } from "@/utils/types";
+import { Alarm, Response } from "@/utils/types";
 import { createClient } from "@/utils/supabase/client";
 
 export const getOngoingAlarm = async () => {
@@ -56,7 +56,7 @@ export const getConfirmed = async (alarm_id: number) => {
     return responses
 }
 
-export const calculateConfirmed = (responses: { status: string, created_at: string, minutes: number, created_by: string }[]) => {
+export const calculateConfirmed = (responses: Response[]) => {
     return responses.map((row) => {
         // Skapa en Date-objekt från created_at
         const createdAt = new Date(row.created_at);
@@ -92,5 +92,3 @@ export const calculateConfirmed = (responses: { status: string, created_at: stri
         return +a.arrivalTime - +b.arrivalTime;
     });
 };
-
-

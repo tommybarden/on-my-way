@@ -16,11 +16,15 @@ export interface User {
     phone: string;
 };
 
-export interface ConfirmedResponse {
-    created_at: string;
-    minutes: number;
-    created_by: string;
+export interface Response {
+    id: number,
+    status: string, 
+    created_at: string, 
+    minutes: number, 
+    created_by: string
+}
+
+export interface ConfirmedResponse extends Response {
     arrivalTime: Date;
     timeLeft: number;
-    status: string;
-  }
+}
