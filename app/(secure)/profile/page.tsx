@@ -27,8 +27,8 @@ export default async function ProfilePage() {
 
             <AlarmListener/>  
             <OngoingAlarm className="rounded-md border-accent border-2"/>
-            <ConfirmButtons user={user ?? {}} alarmId={current_alarm?.id} className="rounded-md border-accent border-2"/>
-            <ConfirmedList users={users ?? {}} alarmId={current_alarm?.id ?? 0} className="rounded-md border-accent border-2"/>
+            <ConfirmButtons userId={user ? user.id : ""} alarmId={current_alarm?.id} className="rounded-md border-accent border-2"/>
+            <ConfirmedList users={users ?? []} alarmId={current_alarm?.id ?? 0} className="rounded-md border-accent border-2"/>
 
         </div>
     );

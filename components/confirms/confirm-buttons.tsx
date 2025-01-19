@@ -5,7 +5,7 @@ import {getStationETA} from "@/utils/helpers";
 import { confirmAlarm } from "@/services/alarms";
 import { User } from "@/utils/types";
 
-export default function ConfirmButtons(props: { user:User, users: Record<string, User>; alarmId: number; className?: string; }) {
+export default function ConfirmButtons(props: { userId:string, alarmId: number; className?: string; }) {
     const [ETA, setETA] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
@@ -38,7 +38,7 @@ export default function ConfirmButtons(props: { user:User, users: Record<string,
 
     const confirm = (minutes: number) => {
         setSubmitting(true)
-        confirmAlarm(props.alarmId, minutes, props?.user?.id ?? '')
+        confirmAlarm(props.alarmId, minutes, props?.userId ?? '')
         setTimeout(() => {
             setSubmitting(false)
         }, 1000)
