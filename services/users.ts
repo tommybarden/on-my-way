@@ -1,5 +1,12 @@
 import { createAdminClient } from '@/utils/supabase/server';
+import {createClient} from "@/utils/supabase/server";
 import { User } from '@/utils/types';
+
+export const getCurrentUser = async () => {
+    const supabase = await createClient();
+    const {data: {user}} = await supabase.auth.getUser();
+    return user
+}
 
 export const getAllUsers = async (): Promise<Record<string, User>> => {
     const supabase = createAdminClient();

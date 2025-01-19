@@ -1,43 +1,9 @@
-import { prettyDate } from "@/utils/helpers";
-import { createClient } from "@/utils/supabase/server";
+import { getOngoingAlarm } from "@/services/alarms";
+import { filterUnits, prettyDate } from "@/utils/helpers";
 
 export default async function OngoingAlarm(props: any) {
 
-    //TODO: Städa upp allt och lägg till en subscription så sidan laddas om när larmet är slut
-    // Larmet borde ta slut en bestämd tid efter att sista person anlänt till station
-    
-    const supabase = await createClient();
-
-    type Alarm = {
-        id: number,
-        created_at: string,
-        description: string,
-        location: string,
-        units: string,
-        status: number
-      }
-    //   type StatusTexts = Record<number, string>;
-
-    //   const statusTexts: StatusTexts = {
-    //     0: "Inaktiv",
-    //     1: "Pågående",
-    //     2: "Avslutad",
-    //   };
-      
-    //   const getStatusText = (status: number) => statusTexts[status] || "-";
-    
-      const filterUnits = (input: string, own: boolean): string => {
-        const units = input.split(',').map(unit => unit.trim());
-        
-        return units.filter(unit => own ? unit.startsWith('J1'): !unit.startsWith('J1')).join(', ');
-      }
-
-      let { data: current_alarm, error } = await supabase
-      .from<string, Alarm>('Alarms')
-      .select('*')
-      .eq('status', 1)
-      .limit(1)
-      .single()
+    const current_alarm = await getOngoingAlarm();
 
     return current_alarm && (
         <div className={props.className + ' p-4'}>

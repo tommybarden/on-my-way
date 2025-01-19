@@ -9,6 +9,8 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
     const [confirmed, setConfirmed] = useState<any[]>([]);
     const { users, alarmId, className } = props;
 
+    //TODO: Fixa visibilitychange-listener så räknaren blir på rätt
+
     useEffect(() => {
         if (!alarmId) return;
 
@@ -25,19 +27,26 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
 
         // Sätt upp subscription när komponenten mountas
         const subscription = subscribeToConfirmed((payload) => {
-            const newData = payload.new; // Hämta ny data om det finns
-            const oldData = payload.old; // Hämta gammal data om det finns
-
-            if (newData) {
-                setConfirmed((prevData) => {
-                  return calculateConfirmed([...prevData, newData]);
-                });
-              } else if (oldData) {
-                setConfirmed((prevData) => {
-                  return calculateConfirmed(prevData.filter(item => item.id !== oldData.id));
-                });
-              }
-
+            const newData = payload.new; // Ny data (vid INSERT/UPDATE)
+            const oldData = payload.old; // Gammal data (vid DELETE/UPDATE)
+        
+            setConfirmed((prevData) => {
+                if (newData && oldData) {
+                    // Uppdatera befintlig rad
+                    return calculateConfirmed(
+                        prevData.map(item => item.id === oldData.id ? newData : item)
+                    );
+                } 
+                if (newData) {
+                    // Lägg till ny rad
+                    return calculateConfirmed([...prevData, newData]);
+                } 
+                if (oldData) {
+                    // Ta bort gammal rad
+                    return calculateConfirmed(prevData.filter(item => item.id !== oldData.id));
+                }
+                return prevData;
+            });
         });
 
         // Interval för att uppdatera nedräkningen varje sekund
@@ -55,10 +64,19 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
             });
         }, 1000);
 
+        const handleVisibilityChange = () => {
+            if (!document.hidden) {
+                fetchConfirmed();
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
         // Rensa upp när komponenten tas bort
         return () => {
             removeSubscription(subscription)
             clearInterval(interval);  // Rensa intervallet
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
 
     }, [alarmId, users]); // Uppdatera om alarmId eller users ändras
@@ -91,6 +109,7 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
                         );
                     })}
                 </ul>
+                
             </div>
         </div>
     );

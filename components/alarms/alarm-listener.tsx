@@ -1,26 +1,23 @@
 "use client";
 
 import { removeSubscription, subscribeToAlarms } from "@/services/subscriptions";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-export default function NoAlarmListener() {
-    const [alarm, setAlarm] = useState(null);
-
+export default function AlarmListener() {
     useEffect(() => {
         const subscription = subscribeToAlarms((newAlarm) => {
-            console.log("Nytt larm upptäckt!", newAlarm);
-            setAlarm(newAlarm);
-
+            console.log("Ändring av larm upptäckt!", newAlarm);
+    
             // Ladda om sidan automatiskt
             setTimeout(() => {
                 window.location.reload();
             }, 500); // Vänta 0,5 sek för att undvika race conditions
         });
-
+    
         return () => {
-            removeSubscription(subscription) // Avsluta prenumerationen vid unmount
+            removeSubscription(subscription); // Avsluta prenumerationen vid unmount
         };
     }, []);
 
-    return <div>Inget pågående larm...</div>;
+    return '';
 }

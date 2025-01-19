@@ -14,14 +14,20 @@ export const getOngoingAlarm = async () => {
     return current_alarm ?? false
 }
 
-export const confirmAlarm = async (alarm_id: number, minutes: number) => {
+export const confirmAlarm = async (alarm_id: number, minutes: number, user: string) => {
     const supabase = createClient();
 
     try {
+            await supabase
+                .from('Responses')
+                .delete()
+                .eq('created_by', user)
+                .eq('alarm_id', alarm_id)
+
             const { data, error } = await supabase
                 .from('Responses')
                 .insert([
-                    { 
+                    {
                         alarm_id, 
                         minutes
                     },

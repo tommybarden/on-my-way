@@ -1,14 +1,28 @@
 import {type ClassValue, clsx} from "clsx";
 import {twMerge} from "tailwind-merge";
+import { PrettyDateOptions } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-type PrettyDateOptions = {
-    date?: boolean; // Inkludera datum
-    time?: boolean; // Inkludera tid
-};
+/////
+
+    //   const statusTexts: StatusTexts = {
+    //     0: "Inaktiv",
+    //     1: "Pågående",
+    //     2: "Avslutad",
+    //   };
+      
+    //   const getStatusText = (status: number) => statusTexts[status] || "-";
+
+/////
+
+export const filterUnits = (input: string, own: boolean): string => {
+    const units = input.split(',').map(unit => unit.trim());
+    
+    return units.filter(unit => own ? unit.startsWith('J1'): !unit.startsWith('J1')).join(', ');
+}
 
 export const prettyDate = (isoDate: string, options: PrettyDateOptions = {date: true, time: false}): string => {
     const date = new Date(isoDate);
