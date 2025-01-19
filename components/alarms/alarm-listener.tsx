@@ -1,22 +1,41 @@
 "use client";
 
 import { removeSubscription, subscribeToAlarms } from "@/services/subscriptions";
+import { useRouter } from 'next/navigation'
 import { useEffect } from "react";
 
 export default function AlarmListener() {
+
+    const router = useRouter();
+
+    const reloadPage = () => {
+        // Ladda om sidan automatiskt
+        setTimeout(() => {
+            //window.location.reload();
+            router.refresh()
+        }, 500); // Vänta 0,5 sek för att undvika race conditions
+    }
+
     useEffect(() => {
         const subscription = subscribeToAlarms((newAlarm) => {
             console.log("Ändring av larm upptäckt!", newAlarm);
     
-            // Ladda om sidan automatiskt
-            setTimeout(() => {
-                window.location.reload();
-            }, 500); // Vänta 0,5 sek för att undvika race conditions
+            reloadPage()
         });
     
+        const handleVisibilityChange = () => {
+            if (!document.hidden) {
+                reloadPage()
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
         return () => {
             removeSubscription(subscription); // Avsluta prenumerationen vid unmount
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
+
     }, []);
 
     return '';

@@ -64,19 +64,10 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
             });
         }, 1000);
 
-        const handleVisibilityChange = () => {
-            if (!document.hidden) {
-                fetchConfirmed();
-            }
-        };
-
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-
         // Rensa upp när komponenten tas bort
         return () => {
             removeSubscription(subscription)
             clearInterval(interval);  // Rensa intervallet
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
 
     }, [alarmId, users]); // Uppdatera om alarmId eller users ändras

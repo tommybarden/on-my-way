@@ -5,7 +5,7 @@ import ConfirmedList from "@/components/confirms/confirmed-list";
 import { getOngoingAlarm } from "@/services/alarms";
 import { getAllUsers, getCurrentUser } from "@/services/users";
 
-export default async function ProtectedPage() {
+export default async function ProfilePage() {
 
     const current_alarm = await getOngoingAlarm();
     

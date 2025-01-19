@@ -124,10 +124,11 @@ export default function RootLayout({
                             <div className="flex gap-5 items-center font-semibold">
                             <Image
                                 className="p-2"
-                                src="/icons/logo-64.png"
+                                src="/icons/logo-128.png"
                                 alt="OMW logo"
                                 width={64}
                                 height={64}
+                                priority
                             />
                             </div>
                             {!hasEnvVars ? <EnvVarWarning/> : <HeaderAuth/>}
@@ -141,7 +142,7 @@ export default function RootLayout({
                         className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
                         <p>
                             <a
-                                href="https://www.jfbk.ax"
+                                href="http://www.jfbk.ax"
                                 target="_blank"
                                 className="font-bold hover:underline"
                                 rel="noreferrer"

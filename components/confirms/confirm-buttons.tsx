@@ -3,8 +3,9 @@ import {Button} from "@/components/ui/button";
 import {useEffect, useState} from "react";
 import {getStationETA} from "@/utils/helpers";
 import { confirmAlarm } from "@/services/alarms";
+import { User } from "@/utils/types";
 
-export default function ConfirmButtons(props: any) {
+export default function ConfirmButtons(props: { user:User, users: Record<string, User>; alarmId: number; className?: string; }) {
     const [ETA, setETA] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
@@ -35,12 +36,6 @@ export default function ConfirmButtons(props: any) {
         }
     }
 
-    const handleVisibilityChange = () => {
-        if (!document.hidden) {
-            updateETA();
-        }
-    };
-
     const confirm = (minutes: number) => {
         setSubmitting(true)
         confirmAlarm(props.alarmId, minutes, props?.user?.id ?? '')
@@ -51,11 +46,6 @@ export default function ConfirmButtons(props: any) {
 
     useEffect(() => {
         updateETA();
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-
-        return () => {
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-        };
     }, []);
 
     return (
