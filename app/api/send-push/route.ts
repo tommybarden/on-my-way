@@ -2,7 +2,7 @@ import {NextResponse} from "next/server";
 import webpush from "web-push";
 import {createClient} from "@supabase/supabase-js";
 
-const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE!);
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
 export async function POST(req: Request) {
     const apiKey = req.headers.get("x-api-key");
