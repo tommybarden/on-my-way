@@ -2,12 +2,14 @@ import type {MetadataRoute} from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
+        "id": "onmyway",
         "name": "On My Way",
         "short_name": "OMW",
+        "description": "Web-based application designed for firefighters and emergency responders to acknowledge their response to an emergency",
         "theme_color": "#000",
         "background_color": "#000",
         "display": "standalone",
-        "orientation": "any",
+        "orientation": "portrait",
         "scope": "/",
         "start_url": "/profile",
         "icons": [
