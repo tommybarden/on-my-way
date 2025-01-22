@@ -9,18 +9,20 @@ export interface Alarm {
 }
 
 export interface User {
-    id?: string;
+    id?: string | undefined;
     first_name: string;
     last_name: string;
     number: number;
     phone: string;
+    truck?: boolean;
+    smoke?: boolean;
 };
 
 export interface Response {
     id: number,
-    status: string, 
-    created_at: string, 
-    minutes: number, 
+    status: string,
+    created_at: string,
+    minutes: number,
     created_by: string
 }
 

@@ -1,4 +1,4 @@
-import { createUser, getCurrentUser } from "@/services/users";
+import { createUser, getCurrentUser, updateUser } from "@/services/users";
 import { User } from "@/utils/types";
 import { NextResponse } from "next/server";
 
@@ -25,11 +25,11 @@ export async function POST(request: Request) {
         smoke: data.smoke
     }
 
-    const newUser = await createUser(userData)
+    const updatedUser = await updateUser(userData)
 
-    if (newUser && newUser.id) {
-        return NextResponse.json({ newUser }, { status: 200 })
+    if (updatedUser) {
+        return NextResponse.json({ updatedUser }, { status: 200 })
     }
 
-    return NextResponse.json({ error: 'Nope.' }, { status: 500 })
+    return NextResponse.json({ error: 'Nope.', updatedUser }, { status: 500 })
 }

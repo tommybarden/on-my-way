@@ -8,12 +8,12 @@ import { getAllUsers, getCurrentUser } from "@/services/users";
 export default async function ProfilePage() {
 
     const current_alarm = await getOngoingAlarm();
-    
-    if(!current_alarm) {
+
+    if (!current_alarm) {
         return (
             <div>
                 <div>Inget pågående larm...</div>
-                <AlarmListener/>                
+                <AlarmListener />
             </div>
 
         )
@@ -22,13 +22,17 @@ export default async function ProfilePage() {
     const user = await getCurrentUser();
     const users = await getAllUsers();
 
+    if (!user) {
+        return
+    }
+
     return (
         <div className="flex-1 w-full flex flex-col gap-2">
 
-            <AlarmListener/>  
-            <OngoingAlarm className="rounded-md border-accent border-2"/>
-            <ConfirmButtons userId={user ? user.id : ""} alarmId={current_alarm?.id} className="rounded-md border-accent border-2"/>
-            <ConfirmedList users={users ?? []} alarmId={current_alarm?.id ?? 0} className="rounded-md border-accent border-2"/>
+            <AlarmListener />
+            <OngoingAlarm className="rounded-md border-accent border-2" />
+            <ConfirmButtons userId={user?.id ?? ""} alarmId={current_alarm?.id} className="rounded-md border-accent border-2" />
+            <ConfirmedList users={users ?? []} alarmId={current_alarm?.id ?? 0} className="rounded-md border-accent border-2" />
 
         </div>
     );
