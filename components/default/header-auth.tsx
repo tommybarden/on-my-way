@@ -41,7 +41,7 @@ export default async function AuthButton() {
     return user ? (
         <div className="flex items-center gap-4">
             <Button asChild size="sm" variant={"outline"}>
-                <Link href="/profile">{user?.user_metadata?.number} - {user?.user_metadata?.last_name}</Link>
+                <Link href="/admin">{user?.user_metadata?.number} - {user?.user_metadata?.last_name}</Link>
             </Button>
         </div>
     ) : (

@@ -3,9 +3,11 @@ self.addEventListener("push", (event) => {
     event.waitUntil(
         self.registration.showNotification(data.title, {
             body: data.body,
-            icon: "/icon.png",
-            badge: "/badge.png",
-            data: data.url
+            icon: "/icons/logo-48.png",
+            badge: "/icons/logo-48.png",
+            //data: data.url,
+            requireInteraction: true,
+            vibrate: [400, 100, 300, 75, 200, 50, 100],
         })
     );
 });
