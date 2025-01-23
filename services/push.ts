@@ -8,21 +8,21 @@ export const savePushSubscription = async (subscription: string) => {
         return false
     }
 
-    // Kolla om prenumerationen redan finns
     const { data: existingSub, error: fetchError } = await supabase
         .from('Push_subscriptions')
         .select('id')
         .eq('user_id', user.id)
-        .single(); // Hämta en rad om den finns
+        .eq('subscription', subscription)
+        .single();
+
+    if (existingSub) {
+        return existingSub;
+    }
 
     const { data, error } = await supabase
         .from('Push_subscriptions')
-        .upsert([
-            existingSub ? {
-                id: existingSub,
-                user_id: user?.id,
-                subscription
-            } : {
+        .insert([
+            {
                 user_id: user?.id,
                 subscription
             },
