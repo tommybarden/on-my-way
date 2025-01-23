@@ -3,11 +3,14 @@ import {Button} from "@/components/ui/button";
 import {useEffect, useState} from "react";
 import {getStationETA} from "@/utils/helpers";
 import {confirmAlarm} from "@/services/alarms";
+import {useRouter} from "next/navigation";
 
 export default function ConfirmButtons(props: { userId: string, alarmId: number; className?: string; }) {
     const [ETA, setETA] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+
+    const router = useRouter();
 
     const updateETA = async () => {
         if (navigator.geolocation) {
@@ -40,6 +43,7 @@ export default function ConfirmButtons(props: { userId: string, alarmId: number;
         confirmAlarm(props.alarmId, minutes, props?.userId ?? '').then(r => {
             console.log(r)
             setSubmitting(false)
+            router.refresh()
         })
             .catch(() => {
                 alert('Ett fel uppstod. Försök igen!')
