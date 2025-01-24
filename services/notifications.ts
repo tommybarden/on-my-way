@@ -1,28 +1,41 @@
-"use server"
+"use server";
 import webpush from "web-push";
-import { createClient } from "@/utils/supabase/server"
+import {createAdminClient} from "@/utils/supabase/server";
+
+webpush.setVapidDetails(
+    process.env.NEXT_PUBLIC_VAPID_SUBJECT!,
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!
+);
 
 export const sendNotification = async (title: string, body: string) => {
+    const supabase = createAdminClient();
+    const payload = JSON.stringify({title, body});
 
-    const supabase = await createClient()
+    // Hämta alla prenumerationer
+    const {data: subscriptions, error} = await supabase
+        .from("Push_subscriptions")
+        .select("subscription");
 
-    const { data: subscribers, error } = await supabase
-        .from('Push_subscriptions')
-        .select('subscription')
+    if (error) throw new Error(`Fel vid hämtning av prenumerationer: ${error.message}`);
 
-    if (error || !subscribers) {
-        return false
-    }
+    let failedSubscriptions: any[] = [];
 
-    webpush.setVapidDetails(
-        process.env.NEXT_PUBLIC_VAPID_SUBJECT!,
-        process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-        process.env.VAPID_PRIVATE_KEY!
+    const sendResults = await Promise.allSettled(
+        subscriptions.map(async ({subscription}) => {
+            try {
+                const parsedSubscription =
+                    typeof subscription === "string" ? JSON.parse(subscription) : subscription;
+
+                await webpush.sendNotification(parsedSubscription, payload);
+            } catch (err) {
+                console.error("❌ Misslyckades att skicka notis:", err);
+                failedSubscriptions.push(subscription);
+            }
+        })
     );
 
-    subscribers?.forEach(({ subscription }) => {
-        webpush.sendNotification(subscription, JSON.stringify({ title, body })).catch(err => {
-            console.error("❌ Misslyckades att skicka notis:", err);
-        });
-    });
-}
+    console.log("🔔 Skickade notiser, resultat:", sendResults);
+
+    return {success: true, sentTo: subscriptions.length, failed: failedSubscriptions.length};
+};
