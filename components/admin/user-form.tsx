@@ -55,7 +55,7 @@ export default function UserForm({
             <div className="flex w-full flex-col gap-5">
                 <strong>{isEditing ? "Redigera användare" : "Skapa användare"}</strong>
 
-                <form className="flex flex-col min-w-96 max-w-96 mx-auto" onSubmit={handleSubmit}>
+                <form className="flex flex-col w-full mx-auto" onSubmit={handleSubmit}>
                     {isEditing && <input type="hidden" name="id" value={user?.id} />}
 
                     <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">

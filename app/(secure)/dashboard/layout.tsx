@@ -12,8 +12,8 @@ export default async function Layout({ children, }: {
     }
 
     return (
-        <>
+        <div className="dashboard md:w-screen w-auto px-6 flex flex-col lg:flex-row gap-2 items-start">
             {children}
-        </>
+        </div>
     );
 }
