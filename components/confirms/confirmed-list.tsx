@@ -84,14 +84,14 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
     };
 
     return (
-        <div className={className + ' p-4'}>
+        <div className={className + ' p-4 lg:text-3xl xl:text-4xl'}>
             <div className="flex w-full flex-col gap-5">
                 <strong>Insatsstyrka</strong>
                 <ul role="list" className="divide-y divide-gray-100">
                     {confirmed.map((confirm, i) => {
                         const user = users[confirm.created_by];  // Hämta användarens data
                         return (
-                            <li key={i} className="flex items-center justify-between py-3 gap-2">
+                            <li key={i} className="flex items-center justify-between py-3 gap-3 xl:py-5">
                                 <span className="hyphens-auto">{user?.first_name} {user?.last_name}</span>
                                 <span style={{ fontFamily: 'Courier New, monospace' }}>
                                     {confirm.timeLeft > 0 ? formatTime(confirm.timeLeft) : confirm.minutes < 0 ? "Far direkt 🚙" : "På station 🚒"}
