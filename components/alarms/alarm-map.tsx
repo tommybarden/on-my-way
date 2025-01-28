@@ -29,7 +29,7 @@ export default function AlarmMap() {
 
     return (
         <>
-            <div className="min-w-6xl h-96" id="map-container" />
+            <div className="min-w-6xl h-[50rem]" id="map-container" />
         </>
     );
 };
