@@ -3,9 +3,9 @@ import {sendNotification} from "@/services/notifications";
 
 export async function GET(request: Request) {
     const messages = [
-        {title: "J15 startar", body: "5 kvitterade"},
-        {title: "Backade", body: ""},
-        {title: "Nytt larm", body: "Räddning - Assistans"},
+        {title: "J15 startar inte", body: "5 testare kvitterade"},
+        {title: "Absolut inte backade", body: "Testar bara"},
+        {title: "Absolut inte ett nytt larm", body: "Testar bara push"},
     ];
 
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
