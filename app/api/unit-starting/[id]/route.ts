@@ -1,12 +1,15 @@
 import { createClient } from "@/utils/supabase/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 //import {sendNotification} from "@/services/notifications";
 
-export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const id = (await params).id
     const idRegex = /^[A-Za-z]{1,3}\d{2,3}$/;
 
-    if (!idRegex.test(id)) {
+    const searchParams = request.nextUrl.searchParams;
+    const secret = searchParams.get('secret')
+
+    if (!idRegex.test(id) || process.env.API_KEY !== secret) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 406 });
     }
 

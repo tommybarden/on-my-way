@@ -1,11 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 //import {sendNotification} from "@/services/notifications";
 import { createClient } from "@/utils/supabase/server";
 
-export async function GET(request: Request, { params }: { params: Promise<{ event: string }> }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ event: string }> }) {
     const event = (await params).event
 
-    if (!event) {
+    const searchParams = request.nextUrl.searchParams;
+    const secret = searchParams.get('secret')
+
+    if (!event || process.env.API_KEY !== secret) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 406 });
     }
 
