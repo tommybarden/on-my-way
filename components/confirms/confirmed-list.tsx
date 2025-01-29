@@ -17,7 +17,7 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
         const fetchConfirmed = async () => {
             const confirmed = await getConfirmed(alarmId);
 
-            if(confirmed) {
+            if (confirmed) {
                 const calculatedData = calculateConfirmed(confirmed);
                 setConfirmed(calculatedData);
             }
@@ -29,18 +29,18 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
         const subscription = subscribeToConfirmed((payload) => {
             const newData = payload.new; // Ny data (vid INSERT/UPDATE)
             const oldData = payload.old; // Gammal data (vid DELETE/UPDATE)
-        
+
             setConfirmed((prevData) => {
                 if (newData && oldData) {
                     // Uppdatera befintlig rad
                     return calculateConfirmed(
                         prevData.map(item => item.id === oldData.id ? newData : item)
                     );
-                } 
+                }
                 if (newData) {
                     // Lägg till ny rad
                     return calculateConfirmed([...prevData, newData]);
-                } 
+                }
                 if (oldData) {
                     // Ta bort gammal rad
                     return calculateConfirmed(prevData.filter(item => item.id !== oldData.id));
@@ -84,23 +84,23 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
     };
 
     return (
-        <div className={className + ' p-4'}>
+        <div className={className + ' p-4 lg:text-3xl xl:text-4xl'}>
             <div className="flex w-full flex-col gap-5">
                 <strong>Insatsstyrka</strong>
                 <ul role="list" className="divide-y divide-gray-100">
                     {confirmed.map((confirm, i) => {
                         const user = users[confirm.created_by];  // Hämta användarens data
                         return (
-                            <li key={i} className="flex items-center justify-between py-3">
-                                <span>{user?.first_name} {user?.last_name}</span>
+                            <li key={i} className="flex items-center justify-between py-3 gap-3 xl:py-5">
+                                <span className="hyphens-auto">{user?.first_name} {user?.last_name}</span>
                                 <span style={{ fontFamily: 'Courier New, monospace' }}>
-                                {confirm.timeLeft > 0 ? formatTime(confirm.timeLeft) : confirm.minutes < 0 ? "Far direkt 🚙" : "På station 🚒"}
+                                    {confirm.timeLeft > 0 ? formatTime(confirm.timeLeft) : confirm.minutes < 0 ? "Far direkt 🚙" : "På station 🚒"}
                                 </span>
                             </li>
                         );
                     })}
                 </ul>
-                
+
             </div>
         </div>
     );
