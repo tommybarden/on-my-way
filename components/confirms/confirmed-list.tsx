@@ -83,9 +83,9 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
     };
 
     const groups = [
-        { title: "Far direkt", icon: Merge, color: "text-blue-500", data: confirmed.filter(c => c.minutes < 0) },
-        { title: "På station", icon: UserCheck, color: "text-green-500", data: confirmed.filter(c => c.minutes >= 0 && c.timeLeft <= 0) },
-        { title: "På väg", icon: Clock, color: "text-orange-500", data: confirmed.filter(c => c.timeLeft > 0).sort((a, b) => a.timeLeft - b.timeLeft) }
+        { title: "far direkt", icon: Merge, color: "text-blue-500", data: confirmed.filter(c => c.minutes < 0) },
+        { title: "på station", icon: UserCheck, color: "text-green-500", data: confirmed.filter(c => c.minutes >= 0 && c.timeLeft <= 0) },
+        { title: "på väg", icon: Clock, color: "text-orange-500", data: confirmed.filter(c => c.timeLeft > 0).sort((a, b) => a.timeLeft - b.timeLeft) }
     ];
 
     return (
@@ -97,7 +97,7 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
                     data.length > 0 && (
                         <div key={title}>
                             <div className="text-lg font-bold mt-4 flex items-center justify-center gap-2">
-                                <Icon className={`w-6 h-6 ${color}`} /> {title}
+                                <Icon className={`w-6 h-6 ${color}`} />{data.length}&nbsp;{title}
                             </div>
                             <ul role="list" className="divide-y divide-gray-100">
                                 {data.map((confirm, i) => {
