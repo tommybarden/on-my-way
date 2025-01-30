@@ -3,13 +3,12 @@
 import { calculateConfirmed, getConfirmed } from "@/services/alarms";
 import { removeSubscription, subscribeToConfirmed } from "@/services/subscriptions";
 import { User } from "@/utils/types";
+import { Clock, Flame, Landmark, Merge, MoveRight, Truck, UserCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function ConfirmedList(props: { users: Record<string, User>; alarmId: number; className?: string; }) {
     const [confirmed, setConfirmed] = useState<any[]>([]);
     const { users, alarmId, className } = props;
-
-    //TODO: Fixa visibilitychange-listener så räknaren blir på rätt
 
     useEffect(() => {
         if (!alarmId) return;
@@ -83,24 +82,43 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
         return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
     };
 
+    const groups = [
+        { title: "Far direkt", icon: Merge, color: "text-blue-500", data: confirmed.filter(c => c.minutes < 0) },
+        { title: "På station", icon: UserCheck, color: "text-green-500", data: confirmed.filter(c => c.minutes >= 0 && c.timeLeft <= 0) },
+        { title: "På väg", icon: Clock, color: "text-orange-500", data: confirmed.filter(c => c.timeLeft > 0).sort((a, b) => a.timeLeft - b.timeLeft) }
+    ];
+
     return (
         <div className={className + ' p-4 lg:text-3xl xl:text-4xl'}>
             <div className="flex w-full flex-col gap-5">
                 <strong>Insatsstyrka</strong>
-                <ul role="list" className="divide-y divide-gray-100">
-                    {confirmed.map((confirm, i) => {
-                        const user = users[confirm.created_by];  // Hämta användarens data
-                        return (
-                            <li key={i} className="flex items-center justify-between py-3 gap-3 xl:py-5">
-                                <span className="hyphens-auto">{user?.first_name} {user?.last_name}</span>
-                                <span style={{ fontFamily: 'Courier New, monospace' }}>
-                                    {confirm.timeLeft > 0 ? formatTime(confirm.timeLeft) : confirm.minutes < 0 ? "Far direkt 🚙" : "På station 🚒"}
-                                </span>
-                            </li>
-                        );
-                    })}
-                </ul>
 
+                {groups.map(({ title, icon: Icon, color, data }) => (
+                    data.length > 0 && (
+                        <div key={title}>
+                            <div className="text-lg font-bold mt-4 flex items-center justify-center gap-2">
+                                <Icon className={`w-6 h-6 ${color}`} /> {title}
+                            </div>
+                            <ul role="list" className="divide-y divide-gray-100">
+                                {data.map((confirm, i) => {
+                                    const user = users[confirm.created_by];
+                                    return (
+                                        <li key={i} className="flex items-center justify-between py-3 gap-3 xl:py-5">
+                                            <div className="flex flex-row gap-1 items-center">
+                                                <span className="truncate max-w-full max-w-1/3">{user?.first_name} {user?.last_name}</span>
+                                                <span>{user?.truck ? <Truck className="w-5 h-5 opacity-80" color="#4783B5" strokeWidth={1} /> : ""}</span>
+                                                <span>{user?.smoke ? <Flame className="w-5 h-5 opacity-50" fill="#FF4D00" strokeWidth={0} /> : ""}</span>
+                                            </div>
+                                            <span style={{ fontFamily: 'Courier New, monospace' }}>
+                                                {confirm.timeLeft > 0 ? formatTime(confirm.timeLeft) : ""}
+                                            </span>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    )
+                ))}
             </div>
         </div>
     );

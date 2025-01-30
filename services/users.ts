@@ -45,6 +45,8 @@ export const getAllUsers = async (): Promise<Record<string, User>> => {
             first_name: user.user_metadata?.first_name || "Okänd",
             last_name: user.user_metadata?.last_name || "Okänd",
             number: user.user_metadata?.number || "",
+            truck: user.user_metadata?.truck || false,
+            smoke: user.user_metadata?.smoke || false
         }));
 
     // Korrekt typning i reduce
