@@ -1,9 +1,9 @@
 'use client'
-import {Button} from "@/components/ui/button";
-import {useEffect, useState} from "react";
-import {getStationETA} from "@/utils/helpers";
-import {confirmAlarm} from "@/services/alarms";
-import {useRouter} from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { getStationETA } from "@/utils/helpers";
+import { confirmAlarm } from "@/services/alarms";
+import { useRouter } from "next/navigation";
 
 export default function ConfirmButtons(props: { userId: string, alarmId: number; className?: string; }) {
     const [ETA, setETA] = useState<number | null>(null);
@@ -13,11 +13,17 @@ export default function ConfirmButtons(props: { userId: string, alarmId: number;
     const router = useRouter();
 
     const updateETA = async () => {
-        if (navigator.geolocation) {
+        console.log('updateETA startar')
+        if (navigator.geolocation && "localhost" !== location.hostname) {
+            console.log('navigator.geolocation finns')
             setLoading(true);
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
+                    console.log('getCurrentPosition klar')
+
                     const coordsArray = [pos.coords.longitude, pos.coords.latitude];
+
+                    console.log(coordsArray)
 
                     getStationETA(coordsArray.join()).then((eta) => {
                         setETA(eta ? eta : null);
@@ -30,7 +36,7 @@ export default function ConfirmButtons(props: { userId: string, alarmId: number;
                 }
                 , {
                     enableHighAccuracy: true,
-                    timeout: 5000,
+                    timeout: 6000,
                     maximumAge: 120 * 1000
                 });
         } else {
