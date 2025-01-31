@@ -21,6 +21,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         return NextResponse.json({ error: "Could not save" }, { status: 406 });
     }
 
-    //await sendNotification(id + ' startar', 'TEST');
+    await sendNotification(id + ' startar', 'TEST');
     return NextResponse.json({ message: "OK", data }, { status: 200 });
 }

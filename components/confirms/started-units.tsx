@@ -36,7 +36,7 @@ export default function StartedUnitsList(props: { alarmId: number; className?: s
                 <div className="flex flex-row gap-4">
                     {units.map((unit, i) =>
                         <div key="i" className="flex flex-col justify-center items-center gap-1">
-                            <div className="text-3xl ring rounded-full p-5">{unit.unit}</div>
+                            <div className="text-2xl ring rounded-full p-5 px-4 tabular-nums">{unit.unit}</div>
                             <span className="" style={{ fontFamily: 'Courier New, monospace' }}>
                                 {unit.timeSince < 900 ? formatTime(unit.timeSince) : "Länge sen"}
                             </span>
