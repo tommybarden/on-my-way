@@ -52,9 +52,7 @@ export const getStationETA = async (lonlat: string) => {
     const station = process.env.NEXT_PUBLIC_STATION_COORDINATES ?? '';
     const endpoint = `https://api.openrouteservice.org/v2/directions/driving-car`;
 
-    if (!lonlat) {
-        return false
-    }
+    console.log(lonlat)
 
     try {
         const response = await fetch(endpoint, {
