@@ -18,7 +18,7 @@ export default function AlarmMap() {
         const center = [2220244.6089087133, 8435829.42412169];
         // ol.proj.fromLonLat([12.550343, 55.665957])
 
-        const apiKey = "24d8f276-3b42-4630-b218-4d0619e8fb1f";
+        const apiKey = process.env.NEXT_PUBLIC_MML_KEY;
 
         // const osmLayer = new TileLayer({
         //     source: new OSM(),
