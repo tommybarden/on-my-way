@@ -1,5 +1,5 @@
 'use client'
-import {useEffect, useRef} from 'react';
+import { useEffect, useRef } from 'react';
 import 'ol/ol.css';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -8,8 +8,8 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
-import {Icon, Style} from 'ol/style';
-import {XYZ} from "ol/source";
+import { Icon, Style } from 'ol/style';
+import { XYZ } from "ol/source";
 
 export default function AlarmMap() {
     const map1Container = useRef();
@@ -24,14 +24,14 @@ export default function AlarmMap() {
         //     source: new OSM(),
         // });
         //
-        // const taustakartta = new TileLayer({
-        //     source: new XYZ({
-        //         attributions: '&copy; <a target="_blank" href="https://www.maanmittauslaitos.fi/sv/kartor-och-geodata/expertanvandare/terrangdata-och-anskaffning-av-dem">LMV</a>',
-        //         url: 'https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=' + apiKey,
-        //     }),
-        //     opacity: 0.9,
-        //     preload: 0,
-        // })
+        const taustakartta = new TileLayer({
+            source: new XYZ({
+                attributions: '&copy; <a target="_blank" href="https://www.maanmittauslaitos.fi/sv/kartor-och-geodata/expertanvandare/terrangdata-och-anskaffning-av-dem">LMV</a>',
+                url: 'https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=' + apiKey,
+            }),
+            opacity: 0.9,
+            preload: 0,
+        })
 
         const maastokartta = new TileLayer({
             source: new XYZ({
@@ -71,5 +71,5 @@ export default function AlarmMap() {
 
     }, []);
 
-    return <div className="min-w-6xl h-[50rem] bg-white" id="map-container"/>;
+    return <div className="min-w-6xl h-[50rem] bg-white" id="map-container" />;
 };

@@ -26,6 +26,13 @@ export interface Response {
     created_by: string
 }
 
+export interface Unit {
+    id: number,
+    created_at: string,
+    unit: string,
+    alarm_id: number
+}
+
 export interface ConfirmedResponse extends Response {
     arrivalTime: Date;
     timeLeft: number;

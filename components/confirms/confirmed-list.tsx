@@ -1,14 +1,16 @@
 'use client'
 
-import {calculateConfirmed, getConfirmed} from "@/services/alarms";
-import {removeSubscription, subscribeToConfirmed} from "@/services/subscriptions";
-import {User} from "@/utils/types";
-import {Flame, Truck} from "lucide-react";
-import {useEffect, useState} from "react";
+import { getConfirmed } from "@/services/alarms";
+import { calculateConfirmed } from "@/utils/helpers";
+import { removeSubscription, subscribeToConfirmed } from "@/services/subscriptions";
+import { formatTime } from "@/utils/helpers";
+import { User } from "@/utils/types";
+import { Flame, Truck } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function ConfirmedList(props: { users: Record<string, User>; alarmId: number; className?: string; }) {
     const [confirmed, setConfirmed] = useState<any[]>([]);
-    const {users, alarmId, className} = props;
+    const { users, alarmId, className } = props;
 
     useEffect(() => {
         if (!alarmId) return;
@@ -24,62 +26,54 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
 
         fetchConfirmed();
 
-        // Sätt upp subscription när komponenten mountas
         const subscription = subscribeToConfirmed((payload) => {
-            const newData = payload.new; // Ny data (vid INSERT/UPDATE)
-            const oldData = payload.old; // Gammal data (vid DELETE/UPDATE)
+            const newData = payload.new;
+            const oldData = payload.old;
 
             setConfirmed((prevData) => {
                 if (newData && oldData) {
-                    // Uppdatera befintlig rad
+                    // Update
                     return calculateConfirmed(
                         prevData.map(item => item.id === oldData.id ? newData : item)
                     );
                 }
                 if (newData) {
-                    // Lägg till ny rad
+                    // Add new one
                     return calculateConfirmed([...prevData, newData]);
                 }
                 if (oldData) {
-                    // Ta bort gammal rad
+                    // Remove deleted
                     return calculateConfirmed(prevData.filter(item => item.id !== oldData.id));
                 }
                 return prevData;
             });
         });
 
-        // Interval för att uppdatera nedräkningen varje sekund
+        // Decrease every second
         const interval = setInterval(() => {
             setConfirmed(prevState => {
                 if (!prevState) return prevState;
                 return prevState.map(row => {
-                    const updatedRow = {...row};
+                    const updatedRow = { ...row };
                     if (updatedRow.timeLeft > 0) {
-                        updatedRow.timeLeft -= 1;  // Minska timeLeft varje sekund
+                        updatedRow.timeLeft -= 1;
                     }
                     return updatedRow;
                 });
             });
         }, 1000);
 
-        // Rensa upp när komponenten tas bort
+        // Clear after
         return () => {
             removeSubscription(subscription)
-            clearInterval(interval);  // Rensa intervallet
+            clearInterval(interval);
         };
 
-    }, [alarmId, users]); // Uppdatera om alarmId eller users ändras
+    }, [alarmId, users]);
 
     if (!confirmed) {
         return <p>Laddar...</p>;
     }
-
-    // Hjälpfunktion för att formatera tid kvar
-    const formatTime = (timeLeft: number) => {
-        const minutes = Math.floor(timeLeft / 60);
-        const seconds = timeLeft % 60;
-        return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-    };
 
     const groups = [
         {
@@ -101,7 +95,7 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
             <div className="flex w-full flex-col gap-5">
                 <strong>Insatsstyrka</strong>
 
-                {groups.map(({title, data}) => (
+                {groups.map(({ title, data }) => (
                     data.length > 0 && (
                         <div key={title}>
                             <div className="text-lg font-bold mt-4 flex items-center justify-center gap-2">
@@ -118,15 +112,15 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
 
                                                 <span>{user?.truck ?
                                                     <Truck className="w-5 h-5 opacity-80" color="#4783B5"
-                                                           strokeWidth={1}/> : <span className='w-5 block'/>}</span>
+                                                        strokeWidth={1} /> : <span className='w-5 block' />}</span>
                                                 <span>{user?.smoke ?
                                                     <Flame className="w-5 h-5 opacity-50" fill="#FF4D00"
-                                                           strokeWidth={0}/> : <span className='w-5 block'/>}</span>
+                                                        strokeWidth={0} /> : <span className='w-5 block' />}</span>
                                                 <span
                                                     className="truncate max-w-full max-w-1/3">{user?.first_name} {user?.last_name}</span>
 
                                             </div>
-                                            <span style={{fontFamily: 'Courier New, monospace'}}>
+                                            <span style={{ fontFamily: 'Courier New, monospace' }}>
                                                 {confirm.timeLeft > 0 ? formatTime(confirm.timeLeft) : ""}
                                             </span>
                                         </li>
