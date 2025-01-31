@@ -68,7 +68,7 @@ export const getStationETA = async (lonlat: string) => {
                 radiuses: 1000,
                 instructions: false,
             }),
-            signal: AbortSignal.timeout(5000)
+            //signal: AbortSignal.timeout(5000)
         });
         const data = await response.json();
 
