@@ -3,8 +3,8 @@ import { createClient } from "@/utils/supabase/server";
 import { cancelAlarm, createAlarm, endAlarm } from "@/services/alarms";
 //import { sendNotification } from "@/services/notifications";
 
-export async function GET(request: NextRequest, { params }: { params: { event: string } }) {
-    const event = params.event;
+export async function GET(request: NextRequest, { params }: { params: Promise<{ event: string }> }) {
+    const event = (await params).event
 
     const searchParams = request.nextUrl.searchParams;
     const secret = searchParams.get('secret');
@@ -25,13 +25,11 @@ export async function GET(request: NextRequest, { params }: { params: { event: s
         return NextResponse.json({ error: "Failed to log event" }, { status: 500 });
     }
 
-    const timestamp = 'kl.' + new Date().toLocaleTimeString("sv-SE", { timeZone: "Europe/Mariehamn" });
-
     try {
         switch (event) {
             case 'alarm':
                 console.log('Alarm')
-                //await sendNotification('Nytt larm!', timestamp);
+                //await sendNotification('Nytt larm!');
                 const units = process.env.DEFAULT_UNITS || 'J11, J12, J14, J15, J17';
                 const alarmResult = await createAlarm('VIRVE', 'Plats saknas', units);
                 if (!alarmResult) throw new Error("Failed to create alarm");
@@ -39,7 +37,7 @@ export async function GET(request: NextRequest, { params }: { params: { event: s
 
             case 'abort':
                 console.log('Backade')
-                //await sendNotification('Backade!', timestamp);
+                //await sendNotification('Backade!');
                 const cancelResult = await cancelAlarm();
                 if (!cancelResult) throw new Error("Failed to cancel alarm");
                 break;

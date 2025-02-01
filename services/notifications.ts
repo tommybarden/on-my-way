@@ -1,6 +1,6 @@
 "use server";
 import webpush from "web-push";
-import {createAdminClient} from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/server";
 
 webpush.setVapidDetails(
     process.env.NEXT_PUBLIC_VAPID_SUBJECT!,
@@ -8,12 +8,15 @@ webpush.setVapidDetails(
     process.env.VAPID_PRIVATE_KEY!
 );
 
-export const sendNotification = async (title: string, body: string) => {
+export const sendNotification = async (title: string, body?: string) => {
     const supabase = createAdminClient();
-    const payload = JSON.stringify({title, body});
+    const timestamp = 'kl.' + new Date().toLocaleTimeString("sv-SE", { timeZone: "Europe/Mariehamn" });
 
-    // Hämta alla prenumerationer
-    const {data: subscriptions, error} = await supabase
+    body = body ?? timestamp;
+
+    const payload = JSON.stringify({ title, body });
+
+    const { data: subscriptions, error } = await supabase
         .from("Push_subscriptions")
         .select("subscription");
 
@@ -22,7 +25,7 @@ export const sendNotification = async (title: string, body: string) => {
     let failedSubscriptions: any[] = [];
 
     const sendResults = await Promise.allSettled(
-        subscriptions.map(async ({subscription}) => {
+        subscriptions.map(async ({ subscription }) => {
             try {
                 const parsedSubscription =
                     typeof subscription === "string" ? JSON.parse(subscription) : subscription;
@@ -37,5 +40,5 @@ export const sendNotification = async (title: string, body: string) => {
 
     console.log("🔔 Skickade notiser, resultat:", sendResults);
 
-    return {success: true, sentTo: subscriptions.length, failed: failedSubscriptions.length};
+    return { success: true, sentTo: subscriptions.length, failed: failedSubscriptions.length };
 };
