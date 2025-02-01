@@ -46,7 +46,7 @@ export default function StartedUnitsList(props: { alarmId: number; className?: s
 
     }, [alarmId])
 
-    if (!units) {
+    if (!units || units.length < 1) {
         return ""
     }
 

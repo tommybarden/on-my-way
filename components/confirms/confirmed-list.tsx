@@ -31,6 +31,11 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
             const oldData = payload.old;
 
             setConfirmed((prevData) => {
+
+                if (prevData.length < 1) {
+                    fetchConfirmed();
+                }
+
                 if (newData && oldData) {
                     // Update
                     return calculateConfirmed(
@@ -89,6 +94,10 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
             data: confirmed.filter(c => c.timeLeft > 0).sort((a, b) => a.timeLeft - b.timeLeft)
         }
     ];
+
+    if (confirmed.length < 1) {
+        return ""
+    }
 
     return (
         <div className={className + ' p-4 lg:text-3xl xl:text-4xl'}>

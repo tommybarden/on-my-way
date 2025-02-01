@@ -21,13 +21,23 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         ])
         .select()
 
-    return NextResponse.json({ message: "OK", data }, { status: 200 });
 
-    // try {
-    //     const result = await sendNotification(event, 'TEST');
-    //     return NextResponse.json({message: "Push-notiser skickade!", result}, {status: 200});
-    // } catch (err) {
-    //     console.error("❌ Fel vid skickning av notiser:", err);
-    //     return NextResponse.json({error: "Misslyckades att skicka notiser"}, {status: 500});
-    // }
+    switch (event) {
+        case 'alarm': console.log('Alarm') //Skapa ny rad i alarm-tabellen
+            break;
+
+        case 'abort': console.log('Backade') //Skicka notis att vi är backade. Ev. byt status på nuvarande larm
+            break;
+
+        case 'all-off': console.log('All-off') //Byt status på aktivt larm
+            break;
+
+        case 'active': console.log('Närvaro') //Tänd skärmen för övningsläge
+            break;
+
+        default:
+            return NextResponse.json({ message: "Not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "OK", data }, { status: 200 });
 }
