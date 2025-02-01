@@ -4,8 +4,8 @@ import OngoingAlarm from "@/components/alarms/ongoing-alarm";
 import ConfirmButtons from "@/components/confirms/confirm-buttons";
 import ConfirmedList from "@/components/confirms/confirmed-list";
 import StartedUnitsList from "@/components/confirms/started-units";
-import { getOngoingAlarm } from "@/services/alarms";
-import { getAllUsers, getCurrentUser } from "@/services/users";
+import { getOngoingAlarm } from "@/services/client/alarms";
+import { getAllUsers, getCurrentUser } from "@/services/server/users";
 import { FireExtinguisher } from "lucide-react";
 
 export default async function ProfilePage() {

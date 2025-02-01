@@ -1,6 +1,6 @@
+import { cancelAlarm, createAlarm, endAlarm } from "@/services/server/alarms";
+import { writeToLog } from "@/services/server/log";
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
-import { cancelAlarm, createAlarm, endAlarm } from "@/services/alarms";
 //import { sendNotification } from "@/services/notifications";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ event: string }> }) {
@@ -11,18 +11,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     if (!event || process.env.API_KEY !== secret) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 406 });
-    }
-
-    const supabase = await createClient();
-
-    const { data, error } = await supabase
-        .from('Log')
-        .insert([{ category: 'station-event', message: event }])
-        .select();
-
-    if (error) {
-        console.error("Error inserting log:", error);
-        return NextResponse.json({ error: "Failed to log event" }, { status: 500 });
     }
 
     try {
@@ -58,7 +46,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                 return NextResponse.json({ error: "Invalid event" }, { status: 400 });
         }
 
-        return NextResponse.json({ message: "OK", data }, { status: 200 });
+        writeToLog('station-event', event)
+
+        return NextResponse.json({ message: "OK" }, { status: 200 });
     } catch (e) {
         console.error("Error handling event:", e);
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });

@@ -1,5 +1,5 @@
 import UserForm from "@/components/admin/user-form";
-import { getCurrentUser } from "@/services/users";
+import { getCurrentUser } from "@/services/server/users";
 
 export default async function AdminPage() {
 

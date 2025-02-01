@@ -1,4 +1,4 @@
-import { createUser, getCurrentUser } from "@/services/users";
+import { createUser, getCurrentUser } from "@/services/server/users";
 import { User } from "@/utils/types";
 import { NextResponse } from "next/server";
 

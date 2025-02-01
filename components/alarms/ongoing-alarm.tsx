@@ -1,12 +1,12 @@
-import { getOngoingAlarm } from "@/services/alarms";
+import { getOngoingAlarm } from "@/services/client/alarms";
 import { filterUnits, prettyDate } from "@/utils/helpers";
 
-export default async function OngoingAlarm(props: any) {
-
+export default async function OngoingAlarm(props: { className?: string; }) {
+    const { className } = props;
     const current_alarm = await getOngoingAlarm();
 
     return current_alarm && (
-        <div className={props.className + ' p-4 lg:text-3xl xl:text-4xl'}>
+        <div className={className + ' p-4 lg:text-3xl xl:text-4xl'}>
             <div className="flex justify-between mb-6">
                 <div>
                     <strong>Aktuellt larm</strong>

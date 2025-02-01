@@ -1,4 +1,5 @@
-import { isCanceledAlarm } from "@/services/alarms";
+
+import { isCanceledAlarm } from "@/services/client/alarms";
 import { OctagonAlert } from "lucide-react";
 
 export default async function AlarmCanceled(props: { className?: string; }) {

@@ -23,14 +23,16 @@ export interface Response {
     status: string,
     created_at: string,
     minutes: number,
-    created_by: string
+    created_by: string,
+    timeLeft?: number
 }
 
 export interface Unit {
     id: number,
     created_at: string,
     unit: string,
-    alarm_id: number
+    alarm_id: number,
+    timeSince?: number
 }
 
 export interface ConfirmedResponse extends Response {

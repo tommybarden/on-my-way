@@ -1,4 +1,4 @@
-import { getCurrentUser } from "@/services/users";
+import { getCurrentUser } from "@/services/server/users";
 import { redirect } from "next/navigation";
 
 export default async function Layout({ children, }: {

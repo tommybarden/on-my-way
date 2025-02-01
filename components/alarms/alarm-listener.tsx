@@ -1,6 +1,6 @@
 "use client";
 
-import { removeSubscription, subscribeToAlarms } from "@/services/subscriptions";
+import { removeSubscription, subscribeToAlarms } from '@/services/client/subscriptions';
 import { useRouter } from 'next/navigation'
 import { useEffect } from "react";
 
@@ -8,14 +8,15 @@ export default function AlarmListener() {
 
     const router = useRouter();
 
-    const reloadPage = () => {
-        setTimeout(() => {
-            //window.location.reload();
-            router.refresh()
-        }, 500); // Vänta 0,5 sek för att undvika race conditions
-    }
-
     useEffect(() => {
+
+        const reloadPage = () => {
+            setTimeout(() => {
+                //window.location.reload();
+                router.refresh()
+            }, 500); // Vänta 0,5 sek för att undvika race conditions
+        }
+
         const subscription = subscribeToAlarms((newAlarm) => {
             console.log("Ändring av larm upptäckt!", newAlarm);
 
@@ -35,7 +36,7 @@ export default function AlarmListener() {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
 
-    }, []);
+    }, [router]);
 
     return '';
 }

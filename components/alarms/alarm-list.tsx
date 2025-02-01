@@ -7,13 +7,13 @@ export default async function AlarmList() {
     const supabase = await createClient();
 
     // TODO: Inga databasfrågor i koden!
-    let { data: alarms, error } = await supabase
+    const { data: alarms, error } = await supabase
         .from<string, Alarm>('Alarms')
         .select('*')
         .eq('status', 2)
         .limit(10)
 
-    if (!alarms) {
+    if (!alarms || error) {
         return false
     }
 

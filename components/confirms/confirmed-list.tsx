@@ -1,15 +1,15 @@
 'use client'
 
-import { getConfirmed } from "@/services/alarms";
+import { getConfirmed } from "@/services/client/alarms";
+import { removeSubscription, subscribeToConfirmed } from "@/services/client/subscriptions";
 import { calculateConfirmed } from "@/utils/helpers";
-import { removeSubscription, subscribeToConfirmed } from "@/services/subscriptions";
 import { formatTime } from "@/utils/helpers";
-import { User } from "@/utils/types";
+import { User, Response } from "@/utils/types";
 import { Flame, Truck } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function ConfirmedList(props: { users: Record<string, User>; alarmId: number; className?: string; }) {
-    const [confirmed, setConfirmed] = useState<any[]>([]);
+    const [confirmed, setConfirmed] = useState<Response[]>([]);
     const { users, alarmId, className } = props;
 
     useEffect(() => {
@@ -60,7 +60,7 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
                 if (!prevState) return prevState;
                 return prevState.map(row => {
                     const updatedRow = { ...row };
-                    if (updatedRow.timeLeft > 0) {
+                    if (updatedRow.timeLeft && updatedRow.timeLeft > 0) {
                         updatedRow.timeLeft -= 1;
                     }
                     return updatedRow;
@@ -87,11 +87,12 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
         },
         {
             title: "På station",
-            data: confirmed.filter(c => c.minutes >= 0 && c.timeLeft <= 0)
+            data: confirmed.filter(c => c.minutes >= 0 && (c.timeLeft ?? 0) <= 0)
         },
         {
             title: "På väg",
-            data: confirmed.filter(c => c.timeLeft > 0).sort((a, b) => a.timeLeft - b.timeLeft)
+            data: confirmed.filter(c => (c.timeLeft ?? Infinity) > 0)
+                .sort((a, b) => (a.timeLeft ?? Infinity) - (b.timeLeft ?? Infinity))
         }
     ];
 
@@ -130,7 +131,7 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
 
                                             </div>
                                             <span style={{ fontFamily: 'Courier New, monospace' }}>
-                                                {confirm.timeLeft > 0 ? formatTime(confirm.timeLeft) : ""}
+                                                {confirm.timeLeft && confirm.timeLeft > 0 ? formatTime(confirm.timeLeft) : ""}
                                             </span>
                                         </li>
                                     );

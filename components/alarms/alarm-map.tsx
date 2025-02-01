@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import 'ol/ol.css';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -12,7 +12,7 @@ import { Icon, Style } from 'ol/style';
 import { XYZ } from "ol/source";
 
 export default function AlarmMap() {
-    const map1Container = useRef();
+    //const map1Container = useRef();
 
     useEffect(() => {
         const center = [2220244.6089087133, 8435829.42412169];
@@ -24,14 +24,14 @@ export default function AlarmMap() {
         //     source: new OSM(),
         // });
         //
-        const taustakartta = new TileLayer({
-            source: new XYZ({
-                attributions: '&copy; <a target="_blank" href="https://www.maanmittauslaitos.fi/sv/kartor-och-geodata/expertanvandare/terrangdata-och-anskaffning-av-dem">LMV</a>',
-                url: 'https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=' + apiKey,
-            }),
-            opacity: 0.9,
-            preload: 0,
-        })
+        // const taustakartta = new TileLayer({
+        //     source: new XYZ({
+        //         attributions: '&copy; <a target="_blank" href="https://www.maanmittauslaitos.fi/sv/kartor-och-geodata/expertanvandare/terrangdata-och-anskaffning-av-dem">LMV</a>',
+        //         url: 'https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=' + apiKey,
+        //     }),
+        //     opacity: 0.9,
+        //     preload: 0,
+        // })
 
         const maastokartta = new TileLayer({
             source: new XYZ({

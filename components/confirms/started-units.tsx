@@ -1,13 +1,14 @@
 'use client'
-import { removeSubscription, subscribeToUnitsStarting } from "@/services/subscriptions";
-import { getStartedUnits } from "@/services/units";
+import { removeSubscription, subscribeToUnitsStarting } from "@/services/client/subscriptions";
+import { getStartedUnits } from "@/services/client/units";
 import { calculateStartedUnits, formatTime } from "@/utils/helpers";
+import { Unit } from "@/utils/types";
 import { useEffect, useState } from "react";
 
 
 export default function StartedUnitsList(props: { alarmId: number; className?: string; }) {
     const { alarmId, className } = props;
-    const [units, setUnits] = useState<any[]>([]);
+    const [units, setUnits] = useState<Unit[]>([]);
 
     useEffect(() => {
         if (!alarmId) return;
@@ -23,7 +24,7 @@ export default function StartedUnitsList(props: { alarmId: number; className?: s
 
         fetchUnits()
 
-        const subscription = subscribeToUnitsStarting((payload) => {
+        const subscription = subscribeToUnitsStarting(() => {
             fetchUnits();
         });
 
@@ -32,7 +33,7 @@ export default function StartedUnitsList(props: { alarmId: number; className?: s
                 if (!prevState) return prevState;
                 return prevState.map(row => {
                     const updatedRow = { ...row };
-                    updatedRow.timeSince++;
+                    updatedRow.timeSince = (updatedRow.timeSince ?? 0) + 1;
                     return updatedRow;
                 });
             });
@@ -59,7 +60,7 @@ export default function StartedUnitsList(props: { alarmId: number; className?: s
                         <div key={i} className="flex flex-col justify-center items-center gap-1">
                             <div className="text-2xl ring rounded-full p-5 px-4 tabular-nums">{unit.unit}</div>
                             <span className="" style={{ fontFamily: 'Courier New, monospace' }}>
-                                {unit.timeSince < 900 ? formatTime(unit.timeSince) : "På väg"}
+                                {unit.timeSince && unit.timeSince < 900 ? formatTime(unit.timeSince) : "På väg"}
                             </span>
                         </div>
                     )}

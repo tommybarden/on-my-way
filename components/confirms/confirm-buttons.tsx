@@ -2,8 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { getStationETA } from "@/utils/helpers";
-import { confirmAlarm } from "@/services/alarms";
 import { useRouter } from "next/navigation";
+import { confirmAlarm } from "@/services/client/alarms";
 
 export default function ConfirmButtons(props: { userId: string, alarmId: number; className?: string; }) {
     const [ETA, setETA] = useState<number | null>(null);

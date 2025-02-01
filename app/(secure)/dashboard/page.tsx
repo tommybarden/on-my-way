@@ -1,10 +1,10 @@
 import OngoingAlarm from "@/components/alarms/ongoing-alarm";
 import AlarmList from "@/components/alarms/alarm-list";
-import { getOngoingAlarm } from "@/services/alarms";
 import AlarmListener from "@/components/alarms/alarm-listener";
-import { getAllUsers } from "@/services/users";
 import ConfirmedList from "@/components/confirms/confirmed-list";
 import AlarmMap from "@/components/alarms/alarm-map";
+import { getOngoingAlarm } from "@/services/client/alarms";
+import { getAllUsers } from "@/services/server/users";
 
 export default async function DashboardPage() {
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { savePushSubscription } from "@/services/push";
+import { savePushSubscription } from "@/services/client/push";
 import { Button } from "../ui/button";
 import { Bell, BellRing } from "lucide-react";
 import { useEffect, useState } from "react";
