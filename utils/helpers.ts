@@ -48,31 +48,30 @@ export const prettyDate = (isoDate: string, options: PrettyDateOptions = { date:
 };
 
 export const getStationETA = async (lonlat: string) => {
-    const apiKey = process.env.NEXT_PUBLIC_OPENROUTESERVICE_KEY ?? ''
     const station = process.env.NEXT_PUBLIC_STATION_COORDINATES ?? '';
-    const endpoint = `https://api.openrouteservice.org/v2/directions/driving-car`;
+    const endpoint = 'https://otp.alandstrafiken.ax/otp/routers/default/plan'
 
-    console.log(lonlat)
+    const params = new URLSearchParams({
+        fromPlace: lonlat.split(',').reverse().join(','),
+        toPlace: station.split(',').reverse().join(','),
+        mode: "CAR",
+        numItineraries: "1",
+        optimize: "QUICK"
+    });
 
     try {
-        const response = await fetch(endpoint, {
-            method: "POST",
+        const response = await fetch(endpoint + '?' + params.toString(), {
+            method: "GET",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `${apiKey}`
             },
-            body: JSON.stringify({
-                coordinates: [lonlat.split(','), station.split(',')],
-                radiuses: 1000,
-                instructions: false,
-            }),
-            //signal: AbortSignal.timeout(5000)
+            signal: AbortSignal.timeout(5000)
         });
         const data = await response.json();
 
-        if (data?.routes[0]?.summary) {
-            const durationInSeconds = data?.routes[0]?.summary.duration;
-            const durationInMinutes = Math.round(durationInSeconds / 60);
+        if (data.plan?.itineraries?.length) {
+            const durationInSeconds = data.plan.itineraries[0].duration;
+            const durationInMinutes = Math.floor(durationInSeconds / 60);
             console.log(`Restid: ${durationInMinutes} minuter`);
             return durationInMinutes;
         } else return false;

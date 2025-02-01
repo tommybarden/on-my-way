@@ -13,17 +13,11 @@ export default function ConfirmButtons(props: { userId: string, alarmId: number;
     const router = useRouter();
 
     const updateETA = async () => {
-        console.log('updateETA startar')
-        if (navigator.geolocation && "localhost" !== location.hostname) {
-            console.log('navigator.geolocation finns')
+        if (navigator.geolocation) {
             setLoading(true);
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
-                    console.log('getCurrentPosition klar')
-
                     const coordsArray = [pos.coords.longitude, pos.coords.latitude];
-
-                    console.log(coordsArray)
 
                     getStationETA(coordsArray.join()).then((eta) => {
                         setETA(eta ? eta : null);
