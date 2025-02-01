@@ -1,78 +1,131 @@
 import { Alarm } from "@/utils/types";
 import { createClient } from "@/utils/supabase/client";
 
+export const createAlarm = async (description: string, location: string, units: string) => {
+    try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+            .from('Alarms')
+            .insert([{ description, location, units, status: 1 }])
+            .select();
+
+        if (error) throw error;
+        return data;
+    } catch (e) {
+        console.error("Error in createAlarm:", e);
+        return null;
+    }
+};
+
 export const getOngoingAlarm = async () => {
-    const supabase = createClient();
+    try {
+        const supabase = createClient();
+        const { data: current_alarm, error } = await supabase
+            .from('Alarms')
+            .select('*')
+            .lt('status', 2)
+            .limit(1)
+            .maybeSingle();
 
-    const { data: current_alarm, error } = await supabase
-        .from<string, Alarm>('Alarms')
-        .select('*')
-        .lt('status', 2)
-        .limit(1)
-        .single()
+        if (error) throw error;
+        return current_alarm;
+    } catch (e) {
+        console.error("Error in getOngoingAlarm:", e);
+        return null;
+    }
+};
 
-    return current_alarm ?? false
-}
+export const cancelAlarm = async () => {
+    try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+            .from('Alarms')
+            .update({ status: 0 })
+            .eq('status', 1)
+            .select();
+
+        if (error) throw error;
+        return data;
+    } catch (e) {
+        console.error("Error in cancelAlarm:", e);
+        return null;
+    }
+};
+
+export const endAlarm = async () => {
+    try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+            .from('Alarms')
+            .update({ status: 2 })
+            .neq('status', 2)
+            .select();
+
+        if (error) throw error;
+        return data;
+    } catch (e) {
+        console.error("Error in endAlarm:", e);
+        return null;
+    }
+};
 
 export const isCanceledAlarm = async () => {
-    const supabase = createClient();
+    try {
+        const supabase = createClient();
+        const { data: canceled, error } = await supabase
+            .from('Alarms')
+            .select('id')
+            .eq('status', 0)
+            .limit(1)
+            .maybeSingle();
 
-    const { data: canceled, error } = await supabase
-        .from<string, Alarm>('Alarms')
-        .select('id')
-        .eq('status', 0)
-        .limit(1)
-        .single()
-
-    console.log(canceled)
-
-    return !!canceled
-}
+        if (error) throw error;
+        return !!canceled;
+    } catch (e) {
+        console.error("Error in isCanceledAlarm:", e);
+        return false;
+    }
+};
 
 export const confirmAlarm = async (alarm_id: number, minutes: number, user: string) => {
-    const supabase = createClient();
-
     try {
-        await supabase
+        const supabase = createClient();
+
+        // Radera befintligt svar, hantera eventuellt fel
+        const { error: deleteError } = await supabase
             .from('Responses')
             .delete()
             .eq('created_by', user)
-            .eq('alarm_id', alarm_id)
+            .eq('alarm_id', alarm_id);
+
+        if (deleteError) throw deleteError;
 
         const { data, error } = await supabase
             .from('Responses')
-            .insert([
-                {
-                    alarm_id,
-                    minutes
-                },
-            ])
-            .select()
+            .insert([{ alarm_id, minutes }])
+            .select();
 
-        if (error) {
-            return false
-        }
-
-        return data
-
+        if (error) throw error;
+        return data;
     } catch (e) {
-        console.error(e)
+        console.error("Error in confirmAlarm:", e);
+        return null;
     }
-
-}
+};
 
 export const getConfirmed = async (alarm_id: number) => {
-    const supabase = createClient();
+    try {
+        const supabase = createClient();
+        const { data: responses, error } = await supabase
+            .from('Responses')
+            .select('*')
+            .order('created_at')
+            .eq('alarm_id', alarm_id);
 
-    const { data: responses, error } = await supabase
-        .from('Responses')
-        .select('*')
-        .order('created_at')
-        .eq('alarm_id', alarm_id)
-
-    if (!responses) {
-        return []
+        if (error) throw error;
+        return responses ?? [];
+    } catch (e) {
+        console.error("Error in getConfirmed:", e);
+        return [];
     }
-
-    return responses
-}
+};

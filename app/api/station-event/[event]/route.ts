@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-//import {sendNotification} from "@/services/notifications";
 import { createClient } from "@/utils/supabase/server";
+import { cancelAlarm, createAlarm, endAlarm } from "@/services/alarms";
+//import { sendNotification } from "@/services/notifications";
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ event: string }> }) {
-    const event = (await params).event
+export async function GET(request: NextRequest, { params }: { params: { event: string } }) {
+    const event = params.event;
 
     const searchParams = request.nextUrl.searchParams;
-    const secret = searchParams.get('secret')
+    const secret = searchParams.get('secret');
 
     if (!event || process.env.API_KEY !== secret) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 406 });
@@ -16,28 +17,52 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     const { data, error } = await supabase
         .from('Log')
-        .insert([
-            { category: 'station-event', message: event },
-        ])
-        .select()
+        .insert([{ category: 'station-event', message: event }])
+        .select();
 
-
-    switch (event) {
-        case 'alarm': console.log('Alarm') //Skapa ny rad i alarm-tabellen
-            break;
-
-        case 'abort': console.log('Backade') //Skicka notis att vi är backade. Ev. byt status på nuvarande larm
-            break;
-
-        case 'all-off': console.log('All-off') //Byt status på aktivt larm
-            break;
-
-        case 'active': console.log('Närvaro') //Tänd skärmen för övningsläge
-            break;
-
-        default:
-            return NextResponse.json({ message: "Not found" }, { status: 404 });
+    if (error) {
+        console.error("Error inserting log:", error);
+        return NextResponse.json({ error: "Failed to log event" }, { status: 500 });
     }
 
-    return NextResponse.json({ message: "OK", data }, { status: 200 });
+    const timestamp = 'kl.' + new Date().toLocaleTimeString("sv-SE", { timeZone: "Europe/Mariehamn" });
+
+    try {
+        switch (event) {
+            case 'alarm':
+                console.log('Alarm')
+                //await sendNotification('Nytt larm!', timestamp);
+                const units = process.env.DEFAULT_UNITS || 'J11, J12, J14, J15, J17';
+                const alarmResult = await createAlarm('VIRVE', 'Plats saknas', units);
+                if (!alarmResult) throw new Error("Failed to create alarm");
+                break;
+
+            case 'abort':
+                console.log('Backade')
+                //await sendNotification('Backade!', timestamp);
+                const cancelResult = await cancelAlarm();
+                if (!cancelResult) throw new Error("Failed to cancel alarm");
+                break;
+
+            case 'all-off':
+                console.log('All-off')
+                const endResult = await endAlarm();
+                if (!endResult) throw new Error("Failed to end alarm");
+                // TODO: Släck skärmen
+                break;
+
+            case 'active':
+                console.log('Närvaro')
+                // TODO: Tänd skärmen för övningsläge
+                break;
+
+            default:
+                return NextResponse.json({ error: "Invalid event" }, { status: 400 });
+        }
+
+        return NextResponse.json({ message: "OK", data }, { status: 200 });
+    } catch (e) {
+        console.error("Error handling event:", e);
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
 }

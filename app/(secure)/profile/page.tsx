@@ -26,7 +26,7 @@ export default async function ProfilePage() {
     const users = await getAllUsers();
 
     if (!user) {
-        return
+        return "Ett fel uppstod. Starta om appen."
     }
 
     return (
