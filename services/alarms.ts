@@ -7,11 +7,26 @@ export const getOngoingAlarm = async () => {
     const { data: current_alarm, error } = await supabase
         .from<string, Alarm>('Alarms')
         .select('*')
-        .eq('status', 1)
+        .lt('status', 2)
         .limit(1)
         .single()
 
     return current_alarm ?? false
+}
+
+export const isCanceledAlarm = async () => {
+    const supabase = createClient();
+
+    const { data: canceled, error } = await supabase
+        .from<string, Alarm>('Alarms')
+        .select('id')
+        .eq('status', 0)
+        .limit(1)
+        .single()
+
+    console.log(canceled)
+
+    return !!canceled
 }
 
 export const confirmAlarm = async (alarm_id: number, minutes: number, user: string) => {

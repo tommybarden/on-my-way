@@ -8,7 +8,7 @@ export const unitStarting = async (unit: string) => {
         const { data: current_alarm } = await supabase
             .from<string, Alarm>('Alarms')
             .select('id')
-            .eq('status', 1)
+            .lt('status', 2)
             .limit(1)
             .single()
 

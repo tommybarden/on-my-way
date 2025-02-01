@@ -15,7 +15,7 @@ export const subscribeToAlarms = (callback: (payload: any) => void) => {
     const supabase = createClient();
 
     return supabase.channel('all-alarm-channel')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'Alarms', filter: 'status=eq.1' }, (payload: any) => {
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'Alarms' }, (payload: any) => {
             callback(payload)
         })
         .subscribe()

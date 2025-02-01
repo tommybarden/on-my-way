@@ -9,7 +9,6 @@ export default function AlarmListener() {
     const router = useRouter();
 
     const reloadPage = () => {
-        // Ladda om sidan automatiskt
         setTimeout(() => {
             //window.location.reload();
             router.refresh()
@@ -19,10 +18,10 @@ export default function AlarmListener() {
     useEffect(() => {
         const subscription = subscribeToAlarms((newAlarm) => {
             console.log("Ändring av larm upptäckt!", newAlarm);
-    
+
             reloadPage()
         });
-    
+
         const handleVisibilityChange = () => {
             if (!document.hidden) {
                 reloadPage()
@@ -32,7 +31,7 @@ export default function AlarmListener() {
         document.addEventListener('visibilitychange', handleVisibilityChange);
 
         return () => {
-            removeSubscription(subscription); // Avsluta prenumerationen vid unmount
+            removeSubscription(subscription);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
 
