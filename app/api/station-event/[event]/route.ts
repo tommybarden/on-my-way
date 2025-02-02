@@ -1,7 +1,7 @@
 import { cancelAlarm, createAlarm, endAlarm } from "@/services/server/alarms";
 import { writeToLog } from "@/services/server/log";
+import { sendNotification } from "@/services/server/notifications";
 import { NextRequest, NextResponse } from "next/server";
-//import { sendNotification } from "@/services/notifications";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ event: string }> }) {
     const event = (await params).event
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         switch (event) {
             case 'alarm':
                 console.log('Alarm')
-                //await sendNotification('Nytt larm!');
+                await sendNotification('Nytt larm!');
                 const units = process.env.DEFAULT_UNITS || 'J11, J12, J14, J15, J17';
                 const alarmResult = await createAlarm('VIRVE', 'Plats saknas', units);
                 if (!alarmResult) throw new Error("Failed to create alarm");
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
             case 'abort':
                 console.log('Backade')
-                //await sendNotification('Backade!');
+                await sendNotification('Backade!');
                 const cancelResult = await cancelAlarm();
                 if (!cancelResult) throw new Error("Failed to cancel alarm");
                 break;

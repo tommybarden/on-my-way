@@ -1,4 +1,4 @@
-# On My Way - Eergency Response Acknowledgment App
+# On My Way - Emergency Response Acknowledgment App
 
 This is a web-based application designed for firefighters and emergency responders to acknowledge their response to an
 emergency. The app allows responders to indicate their availability and estimated arrival time, providing a real-time
@@ -44,6 +44,8 @@ To use this app, you need:
    NEXT_PUBLIC_OPENROUTESERVICE_KEY=[YOUR_OPENROUTESERVICE_KEY]
    SUPABASE_SERVICE_ROLE_KEY=[YOUR_SUPABASE_SERVICE_ROLE_KEY]
    DEFAULT_USER_PASSWORD=[YOUR_DEFAULT_USER_PASSWORD]
+   API_KEY=[API_ENDPOINT_SERVICE_KEY]
+   NEXT_PUBLIC_MML_KEY=[MAP_PROVIDER_API_KEY]
    ```
 
    You can find these values in your Supabase project settings under API.

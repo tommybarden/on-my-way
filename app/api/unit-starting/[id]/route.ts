@@ -1,6 +1,6 @@
+import { sendNotification } from "@/services/server/notifications";
 import { unitStarting } from "@/services/server/units";
 import { NextRequest, NextResponse } from "next/server";
-//import {sendNotification} from "@/services/notifications";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const id = (await params).id
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             return NextResponse.json({ error: "Could not save" }, { status: 406 });
         }
 
-        //await sendNotification(id + ' startar');
+        await sendNotification(id + ' startar');
         return NextResponse.json({ message: "OK", data }, { status: 200 });
 
     } catch (error) {
