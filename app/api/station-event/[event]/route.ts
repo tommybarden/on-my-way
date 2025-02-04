@@ -1,16 +1,16 @@
-import { cancelAlarm, createAlarm, endAlarm } from "@/services/server/alarms";
-import { writeToLog } from "@/services/server/log";
-import { sendNotification } from "@/services/server/notifications";
-import { NextRequest, NextResponse } from "next/server";
+import {cancelAlarm, createAlarm, endAlarm} from "@/services/server/alarms";
+import {writeToLog} from "@/services/server/log";
+import {sendNotification} from "@/services/server/notifications";
+import {NextRequest, NextResponse} from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ event: string }> }) {
+export async function GET(request: NextRequest, {params}: { params: Promise<{ event: string }> }) {
     const event = (await params).event
 
     const searchParams = request.nextUrl.searchParams;
     const secret = searchParams.get('secret');
 
     if (!event || process.env.API_KEY !== secret) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 406 });
+        return NextResponse.json({error: "Unauthorized"}, {status: 406});
     }
 
     try {
@@ -43,14 +43,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                 break;
 
             default:
-                return NextResponse.json({ error: "Invalid event" }, { status: 400 });
+                return NextResponse.json({error: "Invalid event"}, {status: 400});
         }
 
-        writeToLog('station-event', event)
+        await writeToLog('station-event', event)
 
-        return NextResponse.json({ message: "OK" }, { status: 200 });
+        return NextResponse.json({message: "OK"}, {status: 200});
     } catch (e) {
         console.error("Error handling event:", e);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+        return NextResponse.json({error: "Internal server error"}, {status: 500});
     }
 }
