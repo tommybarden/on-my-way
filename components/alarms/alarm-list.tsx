@@ -1,16 +1,17 @@
-import { prettyDate } from "@/utils/helpers";
-import { createClient } from "@/utils/supabase/server";
-import { Alarm } from "@/utils/types";
+import {prettyDate} from "@/utils/helpers";
+import {createClient} from "@/utils/supabase/server";
+import {Alarm} from "@/utils/types";
 
 export default async function AlarmList() {
 
     const supabase = await createClient();
 
     // TODO: Inga databasfrågor i koden!
-    const { data: alarms, error } = await supabase
+    const {data: alarms, error} = await supabase
         .from<string, Alarm>('Alarms')
         .select('*')
         .eq('status', 2)
+        .order('created_at', {ascending: false})
         .limit(10)
 
     if (!alarms || error) {
@@ -28,8 +29,8 @@ export default async function AlarmList() {
                         </div>
                     </div>
                     <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                        <p className="">{prettyDate(alarm.created_at, { date: true })}</p>
-                        <p className="">{prettyDate(alarm.created_at, { time: true })}</p>
+                        <p className="">{prettyDate(alarm.created_at, {date: true})}</p>
+                        <p className="">{prettyDate(alarm.created_at, {time: true})}</p>
                     </div>
                 </li>
             )}

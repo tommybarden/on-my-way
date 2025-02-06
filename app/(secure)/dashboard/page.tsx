@@ -3,8 +3,11 @@ import AlarmList from "@/components/alarms/alarm-list";
 import AlarmListener from "@/components/alarms/alarm-listener";
 import ConfirmedList from "@/components/confirms/confirmed-list";
 import AlarmMap from "@/components/alarms/alarm-map";
-import { getOngoingAlarm } from "@/services/client/alarms";
-import { getAllUsers } from "@/services/server/users";
+import {getOngoingAlarm} from "@/services/client/alarms";
+import {getAllUsers} from "@/services/server/users";
+import StartedUnitsList from "@/components/confirms/started-units";
+import ScreenSaver from "@/components/default/dashboard-screensaver";
+import AlarmCanceled from "@/components/alarms/alarm-canceled";
 
 export default async function DashboardPage() {
 
@@ -13,8 +16,9 @@ export default async function DashboardPage() {
     if (!current_alarm) {
         return (
             <div>
-                <AlarmList />
-                <AlarmListener />
+                <ScreenSaver/>
+                <AlarmList/>
+                <AlarmListener/>
             </div>
         )
     }
@@ -23,13 +27,21 @@ export default async function DashboardPage() {
 
     return (
         <>
-            <AlarmListener />
-            <div>
-                <AlarmMap />
-                <OngoingAlarm className="rounded-md border-accent border-2 max-w-7xl" />
+            <AlarmListener/>
+            <div className="basis-3/5">
+                <AlarmMap/>
+                <OngoingAlarm className="rounded-md border-accent border-2 w-full"/>
             </div>
-            <div>
-                <ConfirmedList users={users ?? []} alarmId={current_alarm?.id ?? 0} className="rounded-md border-accent border-2 min-w-md" />
+            <div className="basis-2/5">
+                <AlarmCanceled className="rounded-md border-accent border-2 mb-4 text-4xl p-10"/>
+                <StartedUnitsList
+                    alarmId={current_alarm?.id ?? 0}
+                    className="rounded-md border-accent border-2 mb-4"
+                />
+                <ConfirmedList
+                    users={users ?? []} alarmId={current_alarm?.id ?? 0}
+                    className="rounded-md border-accent border-2 min-w-md"
+                />
             </div>
         </>
 
