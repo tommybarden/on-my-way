@@ -42,3 +42,5 @@ next-env.d.ts
 
 .idea
 notes.txt
+/supabase/schema.sql
+/supabase/seed.sql
