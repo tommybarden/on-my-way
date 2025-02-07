@@ -1,4 +1,4 @@
-import {cancelAlarm, createAlarm, endAlarm} from "@/services/server/alarms";
+import {cancelAlarm, endAlarm, upsertAlarm} from "@/services/server/alarms";
 import {writeToLog} from "@/services/server/log";
 import {sendNotification} from "@/services/server/notifications";
 import {NextRequest, NextResponse} from "next/server";
@@ -18,8 +18,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ev
             case 'alarm':
                 console.log('Alarm')
                 await sendNotification('Nytt larm!');
-                const units = process.env.DEFAULT_UNITS || 'J11, J12, J14, J15, J17';
-                const alarmResult = await createAlarm('VIRVE', 'Plats saknas', units);
+                const alarmResult = await upsertAlarm({});
                 if (!alarmResult) throw new Error("Failed to create alarm");
                 break;
 
