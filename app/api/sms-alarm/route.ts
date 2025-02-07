@@ -31,7 +31,7 @@ export async function POST(request: Request) {
         };
 
         if (geo && geo?.groups) {
-            let {lat, lon} = geo?.groups;
+            const {lat, lon} = geo?.groups;
 
             alarm.geo = [lat, lon].map(str => {
                 const [degrees, minutes] = str.replace("?", "#").split("#");
