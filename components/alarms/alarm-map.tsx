@@ -1,5 +1,5 @@
 'use client'
-import { useEffect } from 'react';
+import {useEffect} from 'react';
 import 'ol/ol.css';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -8,15 +8,22 @@ import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
-import { Icon, Style } from 'ol/style';
-import { XYZ } from "ol/source";
+import {Icon, Style} from 'ol/style';
+import {XYZ} from "ol/source";
+import {fromLonLat} from "ol/proj";
 
-export default function AlarmMap() {
-    //const map1Container = useRef();
+export default function AlarmMap(props: { geo?: string; className?: string; }) {
+    const {geo, className} = props;
 
     useEffect(() => {
-        const center = [2220244.6089087133, 8435829.42412169];
-        // ol.proj.fromLonLat([12.550343, 55.665957])
+
+        if (!geo) {
+            console.error('NO GEO');
+            return;
+        }
+
+        const lonlat = geo?.split(' ').reverse().map(e => parseFloat(e))
+        const center = fromLonLat(lonlat ?? [12.550343, 55.665957]);//[2220244.6089087133, 8435829.42412169];
 
         const apiKey = process.env.NEXT_PUBLIC_MML_KEY;
 
@@ -49,6 +56,7 @@ export default function AlarmMap() {
             image: new Icon({
                 anchor: [0.5, 1],
                 src: '/marker.png',
+                scale: 1.5
             }),
         }));
 
@@ -63,13 +71,17 @@ export default function AlarmMap() {
             layers: [maastokartta, vectorLayer],
             view: new View({
                 center,
-                zoom: 15,
+                zoom: 14,
             }),
         });
 
         return () => map.setTarget(null!);
 
-    }, []);
+    }, [geo]);
 
-    return <div className="min-w-6xl h-[50rem] bg-white" id="map-container" />;
+    // if (!geo) {
+    //     return null;
+    // }
+
+    return <div className={className + ' w-full bg-white'} id="map-container"/>;
 };

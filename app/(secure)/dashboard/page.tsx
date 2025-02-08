@@ -29,11 +29,11 @@ export default async function DashboardPage() {
         <>
             <AlarmListener/>
             <div className="basis-3/5">
-                <AlarmMap/>
+                <AlarmMap geo={current_alarm?.geo ?? ''} className="min-h-[60rem] h-[60vh]"/>
                 <OngoingAlarm className="rounded-md border-accent border-2 w-full"/>
             </div>
             <div className="basis-2/5">
-                <AlarmCanceled className="rounded-md border-accent border-2 mb-4 text-4xl p-10"/>
+                <AlarmCanceled className="rounded-md border-accent border-2 mb-4 text-4xl p-10 h-20"/>
                 <StartedUnitsList
                     alarmId={current_alarm?.id ?? 0}
                     className="rounded-md border-accent border-2 mb-4"
