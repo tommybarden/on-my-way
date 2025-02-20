@@ -1,9 +1,9 @@
 'use client'
-import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
-import { getStationETA } from "@/utils/helpers";
-import { useRouter } from "next/navigation";
-import { confirmAlarm } from "@/services/client/alarms";
+import {Button} from "@/components/ui/button";
+import {useEffect, useState} from "react";
+import {getStationETA} from "@/utils/helpers";
+import {useRouter} from "next/navigation";
+import {confirmAlarm} from "@/services/client/alarms";
 
 export default function ConfirmButtons(props: { userId: string, alarmId: number; className?: string; }) {
     const [ETA, setETA] = useState<number | null>(null);
@@ -40,11 +40,21 @@ export default function ConfirmButtons(props: { userId: string, alarmId: number;
 
     const confirm = (minutes: number) => {
         setSubmitting(true)
-        confirmAlarm(props.alarmId, minutes, props?.userId ?? '').then(r => {
-            console.log(r)
-            setSubmitting(false)
-            router.refresh()
-        })
+        confirmAlarm(props.alarmId, minutes, props?.userId ?? '')
+            .then(r => {
+                console.log(r)
+                setSubmitting(false)
+
+                if (window) {
+                    window.scrollTo({
+                        top: 1000,
+                        left: 0,
+                        behavior: "smooth",
+                    });
+                }
+
+                router.refresh()
+            })
             .catch(() => {
                 alert('Ett fel uppstod. Försök igen!')
                 setSubmitting(false)
