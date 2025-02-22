@@ -31,6 +31,16 @@ export const subscribeToUnitsStarting = (callback: (payload: any) => void) => {
         .subscribe()
 };
 
+export const subscribeToStationEvents = (callback: (payload: any) => void) => {
+    const supabase = createClient();
+
+    return supabase.channel('all-log-channel')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'Log', filter: 'message=in.[active, all-off]' }, (payload: any) => {
+            callback(payload)
+        })
+        .subscribe()
+};
+
 export const removeSubscription = (channel: RealtimeChannel) => {
     const supabase = createClient();
     return supabase.removeChannel(channel);

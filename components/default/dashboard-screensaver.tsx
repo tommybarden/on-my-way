@@ -1,23 +1,36 @@
 'use client'
-import {useEffect, useState} from "react";
+import { getStationStatus } from "@/services/client/log";
+import { removeSubscription, subscribeToStationEvents } from "@/services/client/subscriptions";
+import { useEffect, useState } from "react";
 
 export default function ScreenSaver() {
     const [isInactive, setIsInactive] = useState(false);
 
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            setIsInactive(true); // Aktivera skärmsläckaren efter 5 sekunder
-        }, 5000); // Tiden är 5000 ms (5 sekunder)
 
-        // När isInactive ändras, sätt eller ta bort klassen "hidden"
-        if (isInactive) {
-            document.body.classList.add('hidden');
-        } else {
-            document.body.classList.remove('hidden');
+        document.body.classList.toggle('hidden', isInactive);
+        document.documentElement.classList.toggle('cursor-none', isInactive);
+
+        const getStatus = async () => {
+            const status = await getStationStatus()
+
+            setIsInactive('active' !== status)
         }
 
+        const subscription = subscribeToStationEvents((payload) => {
+            const newData = payload.new;
+
+            if (newData) {
+                console.log(newData)
+
+                setIsInactive('active' !== newData.message)
+            }
+        })
+
+        getStatus();
+
         return () => {
-            clearTimeout(timeout);
+            removeSubscription(subscription)
         };
     }, [isInactive]);
 
