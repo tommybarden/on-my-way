@@ -35,7 +35,7 @@ export const subscribeToStationEvents = (callback: (payload: any) => void) => {
     const supabase = createClient();
 
     return supabase.channel('all-log-channel')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'Log', filter: 'message=in.[active, all-off]' }, (payload: any) => {
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'Log', filter: 'message=in.("active", "all-off")' }, (payload: any) => {
             callback(payload)
         })
         .subscribe()
