@@ -1,20 +1,10 @@
 import { User } from "@/utils/types";
-import { CircleUserRound, Contact } from "lucide-react";
-import { useState } from "react";
-
+import { Contact } from "lucide-react";
 
 export default function UsersList(props: { users: Record<string, User>; className?: string; }) {
     const { users, className } = props;
 
     const sortedUsers = Object.values(users).sort((a, b) => (a.last_name + a.first_name).localeCompare(b.last_name + b.first_name, 'sv'))
-
-    // "id":"4ade7824-b6e8-402e-9d9c-0f7851f6e3c6",
-    // "phone":"358400258389",
-    // "first_name":"Mikael",
-    // "last_name":"Ahlqvist ",
-    // "number":"31",
-    // "truck":true,
-    // "smoke":true
 
     return (
         <div>
