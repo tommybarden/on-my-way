@@ -20,12 +20,15 @@ export default async function DashboardPage() {
             <>
                 <ScreenSaver />
                 <AlarmListener />
-                <div className="basis-2/5 p-4">
-                    <AlarmList />
+                <div className="flex flex-grow gap-6 justify-around">
+                    <div className="basis-1/4">
+                        <AlarmList />
+                    </div>
+                    <div className="basis-2/4">
+                        <UsersList users={users ?? []} />
+                    </div>
                 </div>
-                <div className="basis-3/5 p-4">
-                    <UsersList users={users ?? []} />
-                </div>
+
 
             </>
         )

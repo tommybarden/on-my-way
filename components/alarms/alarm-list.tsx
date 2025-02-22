@@ -1,39 +1,35 @@
-import {prettyDate} from "@/utils/helpers";
-import {createClient} from "@/utils/supabase/server";
-import {Alarm} from "@/utils/types";
+import { getFinishedAlarms } from "@/services/server/alarms";
+import { prettyDate } from "@/utils/helpers";
 
 export default async function AlarmList() {
 
-    const supabase = await createClient();
+    const alarms = await getFinishedAlarms()
 
-    // TODO: Inga databasfrågor i koden!
-    const {data: alarms, error} = await supabase
-        .from<string, Alarm>('Alarms')
-        .select('*')
-        .eq('status', 2)
-        .order('created_at', {ascending: false})
-        .limit(10)
-
-    if (!alarms || error) {
+    if (!alarms) {
         return false
     }
 
     return (
-        <ul className="divide-y divide-gray-100" role="list">
-            {alarms.map((alarm, i) =>
-                <li className={'flex justify-between gap-x-6 py-5 alarm-' + i} key={alarm.id}>
-                    <div className="flex min-w-0 gap-x-4">
-                        <div className="min-w-0 flex-auto">
-                            <p className="font-semibold">{alarm.location}</p>
-                            <p className="truncate">{alarm.description.split('.').slice(0, 2).join('.')}</p>
+        <div>
+            <div className="lg:text-5xl xl:text-6xl text-center pb-4">Senaste larm</div>
+
+            <ul className="divide-y divide-gray-200 space-y-8 lg:text-2xl xl:text-3xl" role="list">
+                {alarms.map((alarm) => (
+                    <li key={alarm.id} className="flex items-center justify-between py-8 pb-2">
+
+                        <div className="min-w-0 flex-1">
+                            <p className="font-semibold lg:text-4xl xl:text-5xl mb-4">{alarm.location}</p>
+                            <p className="truncate font-light">{alarm.description.split('.').slice(0, 2).join('.')}</p>
                         </div>
-                    </div>
-                    <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                        <p className="">{prettyDate(alarm.created_at, {date: true})}</p>
-                        <p className="">{prettyDate(alarm.created_at, {time: true})}</p>
-                    </div>
-                </li>
-            )}
-        </ul>
+
+                        <div className="shrink-0 text-right">
+                            <p>{prettyDate(alarm.created_at, { date: true })}</p>
+                            <p>{prettyDate(alarm.created_at, { time: true })}</p>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        </div>
+
     )
 }

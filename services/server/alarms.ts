@@ -1,4 +1,5 @@
-import {createAdminClient} from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/server";
+import { Alarm } from "@/utils/types";
 
 export const upsertAlarm = async (alarm: object) => {
     try {
@@ -8,7 +9,7 @@ export const upsertAlarm = async (alarm: object) => {
             Object.entries(alarm).filter(([_, value]) => value !== undefined && value !== null && value !== "")
         )
 
-        const {data: current_alarm, error} = await supabase
+        const { data: current_alarm, error } = await supabase
             .from('Alarms')
             .select('id')
             .lt('status', 2)
@@ -24,9 +25,9 @@ export const upsertAlarm = async (alarm: object) => {
                 status: 1,
             };
 
-            const {data, error} = await supabase
+            const { data, error } = await supabase
                 .from('Alarms')
-                .insert([{...defaultAlarm, ...alarmData}])
+                .insert([{ ...defaultAlarm, ...alarmData }])
                 .select();
 
             if (error) throw error;
@@ -34,7 +35,7 @@ export const upsertAlarm = async (alarm: object) => {
         }
 
         if (current_alarm) { //Found one, update it
-            const {data, error} = await supabase
+            const { data, error } = await supabase
                 .from('Alarms')
                 .update(alarmData)
                 .eq('id', current_alarm.id)
@@ -53,9 +54,9 @@ export const upsertAlarm = async (alarm: object) => {
 export const createAlarm = async (description: string, location: string, units: string) => {
     try {
         const supabase = createAdminClient();
-        const {data, error} = await supabase
+        const { data, error } = await supabase
             .from('Alarms')
-            .insert([{description, location, units, status: 1}])
+            .insert([{ description, location, units, status: 1 }])
             .select();
 
         if (error) throw error;
@@ -69,9 +70,9 @@ export const createAlarm = async (description: string, location: string, units: 
 export const cancelAlarm = async () => {
     try {
         const supabase = createAdminClient();
-        const {data, error} = await supabase
+        const { data, error } = await supabase
             .from('Alarms')
-            .update({status: 0})
+            .update({ status: 0 })
             .eq('status', 1)
             .select();
 
@@ -86,9 +87,9 @@ export const cancelAlarm = async () => {
 export const endAlarm = async () => {
     try {
         const supabase = createAdminClient();
-        const {data, error} = await supabase
+        const { data, error } = await supabase
             .from('Alarms')
-            .update({status: 2})
+            .update({ status: 2 })
             .neq('status', 2)
             .select();
 
@@ -100,3 +101,22 @@ export const endAlarm = async () => {
     }
 };
 
+export const getFinishedAlarms = async () => {
+    try {
+        const supabase = createAdminClient();
+
+        const { data: alarms, error } = await supabase
+            .from<string, Alarm>('Alarms')
+            .select('*')
+            .eq('status', 2)
+            .order('created_at', { ascending: false })
+            .limit(10)
+
+        if (error) throw error;
+
+        return alarms;
+    } catch (e) {
+        console.error("Error in getFinishedAlarms:", e);
+        return null;
+    }
+}
