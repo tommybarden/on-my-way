@@ -26,6 +26,8 @@ export const filterUnits = (input: string, own: boolean): string => {
 
 export const prettyDate = (isoDate: string, options: PrettyDateOptions = { date: true, time: false }): string => {
     const date = new Date(isoDate);
+    if (isNaN(date.getTime())) return "Ogiltigt datum"; // Error handling
+
     const { date: includeDate, time: includeTime } = options;
 
     const dateFormatter = new Intl.DateTimeFormat("sv-SE", {
@@ -33,18 +35,19 @@ export const prettyDate = (isoDate: string, options: PrettyDateOptions = { date:
         month: "short",
         day: "numeric",
         weekday: "short",
+        timeZone: "Europe/Helsinki", // Always use local time
     });
 
     const timeFormatter = new Intl.DateTimeFormat("sv-SE", {
         hour: "2-digit",
         minute: "2-digit",
-        //second: "2-digit",
+        timeZone: "Europe/Helsinki", // Always use local time
     });
 
     const dateString = includeDate ? dateFormatter.format(date) : "";
     const timeString = includeTime ? "kl. " + timeFormatter.format(date) : "";
 
-    return [dateString, timeString].filter(Boolean).join(" "); // Kombinera med ett mellanslag
+    return [dateString, timeString].filter(Boolean).join(" ");
 };
 
 export const getStationETA = async (lonlat: string) => {
