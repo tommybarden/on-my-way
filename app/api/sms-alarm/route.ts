@@ -57,6 +57,10 @@ export async function POST(request: Request) {
             Object.entries(alarm).map(([key, value]: [string, string]) => [key, value.trim()])
         );
 
+        //Wait randomly to let the database update
+        const postpone = Math.floor(Math.random() * 800) + 200;
+        await new Promise(resolve => setTimeout(resolve, postpone));
+
         const currentAlarm = await upsertAlarm(alarm)
         await writeToLog('SMS recieved from ' + unit, JSON.stringify(alarm))
 

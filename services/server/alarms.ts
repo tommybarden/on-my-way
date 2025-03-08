@@ -1,30 +1,33 @@
 import { createAdminClient } from "@/utils/supabase/server";
 import { Alarm } from "@/utils/types";
 
-export const upsertAlarm = async (alarm: object) => {
+export const upsertAlarm = async (alarm: Partial<Alarm>) => {
     try {
         const supabase = createAdminClient();
 
+        const defaultAlarm: Alarm = {
+            description: "Virve",
+            location: "Ingen plats angiven",
+            units: process.env.DEFAULT_UNITS || 'J11, J12, J14, J15, J17',
+            geo: "",
+            status: 1,
+        };
+
+        //Remove unset rows
         const alarmData = Object.fromEntries(
-            Object.entries(alarm).filter(([_, value]) => value !== undefined && value !== null && value !== "")
-        )
+            Object.entries(alarm).filter(([_, value]) =>
+                value !== undefined && value !== null && value !== ""
+            )
+        );
 
         const { data: current_alarm, error } = await supabase
             .from('Alarms')
-            .select('id')
+            .select('*')
             .lt('status', 2)
             .limit(1)
             .maybeSingle();
 
-        if (!current_alarm || error) { //No ongoing alarm in db. Create a new one
-            const defaultAlarm = {
-                description: "Virve",
-                location: "Ingen plats angiven",
-                units: process.env.DEFAULT_UNITS || 'J11, J12, J14, J15, J17',
-                geo: "",
-                status: 1,
-            };
-
+        if (!current_alarm || error) {
             const { data, error } = await supabase
                 .from('Alarms')
                 .insert([{ ...defaultAlarm, ...alarmData }])
@@ -34,12 +37,21 @@ export const upsertAlarm = async (alarm: object) => {
             return data;
         }
 
-        if (current_alarm) { //Found one, update it
+        if (current_alarm) {
+            //Replace default values
+            const updateData = { ...alarmData };
+
+            for (const key of Object.keys(current_alarm) as Array<keyof Alarm>) {
+                if (current_alarm[key] === defaultAlarm[key] && alarm[key]) {
+                    updateData[key] = alarm[key];
+                }
+            }
+
             const { data, error } = await supabase
                 .from('Alarms')
-                .update(alarmData)
+                .update(updateData)
                 .eq('id', current_alarm.id)
-                .select()
+                .select();
 
             if (error) throw error;
             return data;

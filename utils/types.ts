@@ -1,11 +1,12 @@
 
 export interface Alarm {
-    id: number,
-    created_at: string,
+    id?: number,
+    created_at?: string,
     description: string,
     location: string,
     units: string,
-    status: number
+    status: number,
+    geo?: string
 }
 
 export interface User {

@@ -15,6 +15,10 @@ export default function AlarmListener() {
             }, 500); // Vänta 0,5 sek för att undvika race conditions
         }
 
+        const autoReloadInterval = setInterval(() => {
+            reloadPage();
+        }, 43200000); // 12 timmar
+
         const subscription = subscribeToAlarms((newAlarm) => {
             console.log("Ändring av larm upptäckt!", newAlarm);
 
@@ -32,6 +36,7 @@ export default function AlarmListener() {
         return () => {
             removeSubscription(subscription);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
+            clearInterval(autoReloadInterval);
         };
 
     }, []);
