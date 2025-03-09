@@ -132,3 +132,43 @@ export const getFinishedAlarms = async () => {
         return null;
     }
 }
+
+export const getLatestAlarm = async () => {
+    try {
+        const supabase = createAdminClient();
+
+        const { data: alarms, error } = await supabase
+            .from<string, Alarm>('Alarms')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single()
+
+        if (error) throw error;
+
+        return alarms;
+    } catch (e) {
+        console.error("Error in getLatestAlarm:", e);
+        return null;
+    }
+}
+
+export const getAlarmById = async (id: string) => {
+    try {
+        const supabase = createAdminClient();
+
+        const { data: alarms, error } = await supabase
+            .from<string, Alarm>('Alarms')
+            .select('*')
+            .eq('id', id)
+            .limit(1)
+            .single()
+
+        if (error) throw error;
+
+        return alarms;
+    } catch (e) {
+        console.error("Error in getAlarmById:", e);
+        return null;
+    }
+}
