@@ -78,7 +78,7 @@ export default async function AlarmDetails(props: { alarm: Alarm; className?: st
     }
 
     return (
-        <div className={className + ' border p-4'} >
+        <div className={className + ''} >
             <div className="text-2xl mb-4">Larmdetaljer</div>
 
             <div className="flex flex-col gap-4">
