@@ -1,10 +1,12 @@
-import { getConfirmed } from "@/services/client/alarms";
-import { getStartedUnits } from "@/services/client/units";
-import { getAllUsers } from "@/services/server/users";
-import { Alarm } from "@/utils/types";
+import {getConfirmed} from "@/services/client/alarms";
+import {getStartedUnits} from "@/services/client/units";
+import {getAllUsers} from "@/services/server/users";
+import {Alarm} from "@/utils/types";
+import {Button} from "@/components/ui/button";
+import Link from "next/link";
 
 export default async function AlarmDetails(props: { alarm: Alarm; className?: string; }) {
-    const { alarm, className } = props;
+    const {alarm, className} = props;
 
     const users = await getAllUsers();
     const confirmed = await getConfirmed(alarm.id ?? 0);
@@ -78,7 +80,7 @@ export default async function AlarmDetails(props: { alarm: Alarm; className?: st
     }
 
     return (
-        <div className={className + ''} >
+        <div className={className + ''}>
             <div className="text-2xl mb-4">Larmdetaljer</div>
 
             <div className="flex flex-col gap-4">
@@ -128,6 +130,14 @@ export default async function AlarmDetails(props: { alarm: Alarm; className?: st
                 </div>
 
             </div>
+
+            <div className="flex justify-end my-4">
+                <Link href={{pathname: "https://www.raddning.ax/node/add/alarmreport"}} target="_blank">
+                    <Button size={"lg"} variant={"destructive"}>Skriv
+                        rapport &raquo;</Button>
+                </Link>
+            </div>
+
         </div>
     )
 }
