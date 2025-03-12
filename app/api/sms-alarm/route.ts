@@ -1,4 +1,4 @@
-import { waitUntil } from '@vercel/functions';
+import { after } from 'next/server';
 import { NextResponse } from "next/server";
 import { writeToLog } from "@/services/server/log";
 import { updateAlarm } from "@/services/server/alarms";
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
 
         await writeToLog('SMS recieved from ' + unit, JSON.stringify(alarm))
 
-        waitUntil((async () => {
+        after(async () => {
             //Wait randomly to let the database update
             const postpone = 500;
             await new Promise(resolve => setTimeout(resolve, postpone));
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
             const currentAlarm = await updateAlarm(alarm)
 
             await writeToLog('Alarm updated', JSON.stringify(currentAlarm))
-        })());
+        });
 
         return NextResponse.json({ message: "OK", alarm }, { status: 200 });
 
