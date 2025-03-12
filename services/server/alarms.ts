@@ -63,6 +63,52 @@ export const upsertAlarm = async (alarm: Partial<Alarm>) => {
     }
 }
 
+export const insertAlarm = async (alarm: Partial<Alarm>) => {
+    const supabase = createAdminClient();
+
+    const defaultAlarm: Alarm = {
+        description: "Virve",
+        location: "Ingen plats angiven",
+        units: process.env.DEFAULT_UNITS || 'J11, J12, J14, J15, J17',
+        geo: "",
+        status: 1,
+    };
+
+    const alarmData = Object.fromEntries(
+        Object.entries(alarm).filter(([_, value]) =>
+            value !== undefined && value !== null && value !== ""
+        )
+    );
+
+    const { data, error } = await supabase
+        .from('Alarms')
+        .insert([{ ...defaultAlarm, ...alarmData }])
+        .select();
+
+    if (error) throw error;
+    return data;
+};
+
+export const updateAlarm = async (alarm: Partial<Alarm>) => {
+    const supabase = createAdminClient();
+
+    const updateData = Object.fromEntries(
+        Object.entries(alarm).filter(([_, value]) =>
+            value !== undefined && value !== null && value !== ""
+        )
+    );
+
+    const { data, error } = await supabase
+        .from('Alarms')
+        .update(updateData)
+        .eq('status', 1)
+        .limit(1)
+        .select();
+
+    if (error) throw error;
+    return data;
+};
+
 export const createAlarm = async (description: string, location: string, units: string) => {
     try {
         const supabase = createAdminClient();

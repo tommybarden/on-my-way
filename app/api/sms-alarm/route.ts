@@ -1,6 +1,7 @@
+import { waitUntil } from '@vercel/functions';
 import { NextResponse } from "next/server";
 import { writeToLog } from "@/services/server/log";
-import { upsertAlarm } from "@/services/server/alarms";
+import { updateAlarm } from "@/services/server/alarms";
 
 export async function POST(request: Request) {
     const apiKey = request.headers.get("x-api-key");
@@ -57,14 +58,20 @@ export async function POST(request: Request) {
             Object.entries(alarm).map(([key, value]: [string, string]) => [key, value.trim()])
         );
 
-        //Wait randomly to let the database update
-        const postpone = Math.floor(Math.random() * 800) + 200;
-        await new Promise(resolve => setTimeout(resolve, postpone));
 
-        const currentAlarm = await upsertAlarm(alarm)
         await writeToLog('SMS recieved from ' + unit, JSON.stringify(alarm))
 
-        return NextResponse.json({ message: "OK", currentAlarm }, { status: 200 });
+        waitUntil((async () => {
+            //Wait randomly to let the database update
+            const postpone = 500;
+            await new Promise(resolve => setTimeout(resolve, postpone));
+
+            const currentAlarm = await updateAlarm(alarm)
+
+            await writeToLog('Alarm updated', JSON.stringify(currentAlarm))
+        })());
+
+        return NextResponse.json({ message: "OK", alarm }, { status: 200 });
 
     } catch (e) {
         console.error("Error handling event:", e);
