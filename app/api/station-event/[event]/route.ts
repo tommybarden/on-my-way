@@ -39,8 +39,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
             case 'all-off':
                 console.log('All-off')
-                const offResult = await endAlarm();
-                if (!offResult) throw new Error("Failed to send all-off");
+                //const offResult = await endAlarm();
+                //if (!offResult) throw new Error("Failed to send all-off");
                 break;
 
             case 'alarm-off':
