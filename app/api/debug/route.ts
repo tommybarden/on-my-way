@@ -12,10 +12,10 @@ export async function POST(request: Request) {
         await writeToLog('Debug', 'Start ' + Date.now())
 
         after(async () => {
-            const postpone = 500;
+            const postpone = Math.floor(Math.random() * 500) + 500;
             await new Promise(resolve => setTimeout(resolve, postpone));
 
-            await writeToLog('Debug', 'End ' + Date.now())
+            await writeToLog('Debug', 'End ' + Date.now() + ' ' + postpone);
         });
 
         return NextResponse.json({message: "OK"}, {status: 200});
