@@ -31,7 +31,7 @@ export default function ConfirmButtons(props: { userId: string, alarmId: number;
                 , {
                     enableHighAccuracy: true,
                     timeout: 6000,
-                    maximumAge: 120 * 1000
+                    maximumAge: 15 * 1000
                 });
         } else {
             setLoading(false);
@@ -51,6 +51,10 @@ export default function ConfirmButtons(props: { userId: string, alarmId: number;
                         left: 0,
                         behavior: "smooth",
                     });
+                }
+
+                if ('vibrate' in navigator) {
+                    navigator.vibrate([200, 100, 200])
                 }
 
                 router.refresh()
