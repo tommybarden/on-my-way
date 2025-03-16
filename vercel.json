@@ -1,7 +1,0 @@
-{
-    "functions": {
-      "api/sms-alarm/*.js": {
-        "compute": "fluid"
-      }
-    }
-  }
