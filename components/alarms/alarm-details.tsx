@@ -53,15 +53,15 @@ export default async function AlarmDetails(props: { alarm: Alarm; className?: st
     const groupedByUnit: Record<string, CrewMember[]> = {};
 
     units.forEach(unit => groupedByUnit[unit.unit] = []);
-    groupedByUnit["Egen bil"] = [];
-    groupedByUnit["Övriga"] = [];
-
     crew.forEach(person => {
         if (!groupedByUnit[person.unit]) {
             groupedByUnit[person.unit] = [];
         }
         groupedByUnit[person.unit].push(person);
     });
+
+    if (groupedByUnit["Egen bil"]?.length === 0) delete groupedByUnit["Egen bil"];
+    if (groupedByUnit["Övriga"]?.length === 0) delete groupedByUnit["Övriga"];
 
     const formatDate = (timestring: string) => {
         const date = new Date(timestring);
@@ -103,7 +103,7 @@ export default async function AlarmDetails(props: { alarm: Alarm; className?: st
                         {Object.keys(groupedByUnit).map(unit => (
                             <div key={unit} className="flex flex-col pb-4">
                                 <div className="flex flex-row items-center">
-                                    <span className="text-xl">{unit}</span>&nbsp;
+                                    <span className="text-xl w-20">{unit}</span>&nbsp;
                                     <span className="text-red-500 ml-4">
                                         {groupedByUnit[unit].length > 0 ? '(' + groupedByUnit[unit].length + ')' : ''}
                                     </span>
