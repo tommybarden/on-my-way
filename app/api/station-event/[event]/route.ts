@@ -1,10 +1,10 @@
-import { cancelAlarm, endAlarm, upsertAlarm } from "@/services/server/alarms";
-import { writeToLog } from "@/services/server/log";
-import { sendNotification } from "@/services/server/notifications";
-import { getCurrentUser } from "@/services/server/users";
-import { NextRequest, NextResponse } from "next/server";
+import {cancelAlarm, endAlarm, insertAlarm} from "@/services/server/alarms";
+import {writeToLog} from "@/services/server/log";
+import {sendNotification} from "@/services/server/notifications";
+import {getCurrentUser} from "@/services/server/users";
+import {NextRequest, NextResponse} from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ event: string }> }) {
+export async function GET(request: NextRequest, {params}: { params: Promise<{ event: string }> }) {
     const event = (await params).event
 
     const searchParams = request.nextUrl.searchParams;
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     if (!event || process.env.API_KEY !== secret) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 406 });
+        return NextResponse.json({error: "Unauthorized"}, {status: 406});
     }
 
     try {
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             case 'alarm':
                 console.log('Alarm')
                 await sendNotification('Nytt larm!');
-                const alarmResult = await upsertAlarm({});
+                const alarmResult = await insertAlarm({});
                 if (!alarmResult) throw new Error("Failed to create alarm");
                 break;
 
@@ -55,15 +55,15 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
                 break;
 
             default:
-                return NextResponse.json({ error: "Invalid event" }, { status: 400 });
+                return NextResponse.json({error: "Invalid event"}, {status: 400});
         }
 
         //Put event in log, from where we handle display state
         await writeToLog('station-event', event)
 
-        return NextResponse.json({ message: "OK" }, { status: 200 });
+        return NextResponse.json({message: "OK"}, {status: 200});
     } catch (e) {
         console.error("Error handling event:", e);
-        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+        return NextResponse.json({error: "Internal server error"}, {status: 500});
     }
 }

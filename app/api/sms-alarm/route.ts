@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server';
 import {writeToLog} from "@/services/server/log";
-import {updateAlarm} from "@/services/server/alarms";
+import {getLatestAlarm, updateAlarm} from "@/services/server/alarms";
 
 export async function POST(request: Request) {
     const apiKey = request.headers.get("x-api-key");
@@ -56,16 +56,25 @@ export async function POST(request: Request) {
         alarm = Object.fromEntries(
             Object.entries(alarm).map(([key, value]: [string, string]) => [key, value.trim()])
         );
-        
+
         await writeToLog('SMS recieved from ' + unit, JSON.stringify(alarm))
 
-        const currentAlarm = await updateAlarm(alarm)
-        await writeToLog('Alarm updated', JSON.stringify(currentAlarm))
+        try {
+            const latestAlarm = await getLatestAlarm()
+            await writeToLog('Latest alarm', JSON.stringify(latestAlarm));
+
+            const currentAlarm = await updateAlarm(alarm);
+            await writeToLog('Alarm updated', JSON.stringify(currentAlarm));
+        } catch (error) {
+            console.error("Error updating alarm:", error);
+            await writeToLog('Error updating alarm', JSON.stringify(error));
+            return NextResponse.json({error: "Failed to update alarm"}, {status: 500});
+        }
 
         return NextResponse.json({message: "OK", alarm}, {status: 200});
 
     } catch (e) {
         console.error("Error handling event:", e);
-        return NextResponse.json({error: e}, {status: 500});
+        return NextResponse.json({error: e instanceof Error ? e.message : "Unknown error"}, {status: 500});
     }
 }

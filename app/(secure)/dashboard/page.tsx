@@ -3,12 +3,14 @@ import AlarmList from "@/components/alarms/alarm-list";
 import AlarmListener from "@/components/alarms/alarm-listener";
 import ConfirmedList from "@/components/confirms/confirmed-list";
 import AlarmMap from "@/components/alarms/alarm-map";
-import { getOngoingAlarm } from "@/services/client/alarms";
-import { getAllUsers } from "@/services/server/users";
+import {getOngoingAlarm} from "@/services/client/alarms";
+import {getAllUsers} from "@/services/server/users";
 import StartedUnitsList from "@/components/confirms/started-units";
 import ScreenSaver from "@/components/default/dashboard-screensaver";
 import AlarmCanceled from "@/components/alarms/alarm-canceled";
 import UsersList from "@/components/default/all-users";
+
+export const revalidate = 0
 
 export default async function DashboardPage() {
 
@@ -18,14 +20,14 @@ export default async function DashboardPage() {
     if (!current_alarm) {
         return (
             <>
-                <ScreenSaver />
-                <AlarmListener />
+                <ScreenSaver/>
+                <AlarmListener/>
                 <div className="flex flex-grow gap-6 justify-around">
                     <div className="basis-1/4">
-                        <AlarmList />
+                        <AlarmList/>
                     </div>
                     <div className="basis-2/4">
-                        <UsersList users={users ?? []} />
+                        <UsersList users={users ?? []}/>
                     </div>
                 </div>
 
@@ -36,13 +38,13 @@ export default async function DashboardPage() {
 
     return (
         <>
-            <AlarmListener />
+            <AlarmListener/>
             <div className="basis-3/5">
-                <AlarmMap geo={current_alarm?.geo ?? ''} className="min-h-[60rem] h-[60vh]" />
-                <OngoingAlarm className="rounded-md border-accent border-2 w-full" />
+                <AlarmMap geo={current_alarm?.geo ?? ''} className="min-h-[60rem] h-[60vh]"/>
+                <OngoingAlarm className="rounded-md border-accent border-2 w-full"/>
             </div>
             <div className="basis-2/5">
-                <AlarmCanceled className="rounded-md border-accent border-2 mb-4 text-4xl p-10 h-20" />
+                <AlarmCanceled className="rounded-md border-accent border-2 mb-4 text-4xl p-10 h-20"/>
                 <StartedUnitsList
                     alarmId={current_alarm?.id ?? 0}
                     className="rounded-md border-accent border-2 mb-4"
