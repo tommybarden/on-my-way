@@ -1,4 +1,4 @@
-import {cancelAlarm, endAlarm, insertAlarm} from "@/services/server/alarms";
+import {cancelAlarm, endAlarm, upsertAlarm} from "@/services/server/alarms";
 import {writeToLog} from "@/services/server/log";
 import {sendNotification} from "@/services/server/notifications";
 import {getCurrentUser} from "@/services/server/users";
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ev
             case 'alarm':
                 console.log('Alarm')
                 await sendNotification('Nytt larm!');
-                const alarmResult = await insertAlarm({});
+                const alarmResult = await upsertAlarm({});
                 if (!alarmResult) throw new Error("Failed to create alarm");
                 break;
 

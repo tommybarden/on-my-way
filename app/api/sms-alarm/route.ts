@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server';
 import {writeToLog} from "@/services/server/log";
-import {getLatestAlarm, updateAlarm} from "@/services/server/alarms";
+import {upsertAlarm} from "@/services/server/alarms";
 
 export async function POST(request: Request) {
     const apiKey = request.headers.get("x-api-key");
@@ -60,10 +60,7 @@ export async function POST(request: Request) {
         await writeToLog('SMS recieved from ' + unit, JSON.stringify(alarm))
 
         try {
-            const latestAlarm = await getLatestAlarm()
-            await writeToLog('Latest alarm', JSON.stringify(latestAlarm));
-
-            const currentAlarm = await updateAlarm(alarm);
+            const currentAlarm = await upsertAlarm(alarm);
             await writeToLog('Alarm updated', JSON.stringify(currentAlarm));
         } catch (error) {
             console.error("Error updating alarm:", error);
