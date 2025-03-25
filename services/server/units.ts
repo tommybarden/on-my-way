@@ -1,11 +1,11 @@
-import { createClient } from "@/utils/supabase/server";
-import { Alarm } from "@/utils/types";
+import {createClient} from "@/utils/supabase/server";
+import {Alarm} from "@/utils/types";
 
 export const unitStarting = async (unit: string) => {
     const supabase = await createClient();
 
     try {
-        const { data: current_alarm } = await supabase
+        const {data: current_alarm} = await supabase
             .from<string, Alarm>('Alarms')
             .select('id')
             .lt('status', 2)
@@ -19,7 +19,8 @@ export const unitStarting = async (unit: string) => {
 
         const alarm_id = current_alarm?.id;
 
-        const { data: already_left } = await supabase
+        // @ts-ignore
+        const {data: already_left} = await supabase
             .from<string, Alarm>('Unit_starts')
             .select('id')
             .eq('alarm_id', alarm_id)
@@ -32,7 +33,7 @@ export const unitStarting = async (unit: string) => {
             return false
         }
 
-        const { data, error } = await supabase
+        const {data, error} = await supabase
             .from('Unit_starts')
             .insert([
                 {

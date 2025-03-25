@@ -168,6 +168,7 @@ export const getFinishedAlarms = async () => {
     try {
         const supabase = createAdminClient();
 
+        // @ts-ignore
         const {data: alarms, error} = await supabase
             .from<string, Alarm>('Alarms')
             .select('*')
@@ -208,6 +209,7 @@ export const getAlarmById = async (id: string) => {
     try {
         const supabase = createAdminClient();
 
+        // @ts-ignore
         const {data: alarms, error} = await supabase
             .from<string, Alarm>('Alarms')
             .select('*')
