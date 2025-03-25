@@ -168,9 +168,8 @@ export const getFinishedAlarms = async () => {
     try {
         const supabase = createAdminClient();
 
-        // @ts-ignore
         const {data: alarms, error} = await supabase
-            .from<string, Alarm>('Alarms')
+            .from('Alarms')
             .select('*')
             .eq('status', 2)
             .order('created_at', {ascending: false})
@@ -178,7 +177,7 @@ export const getFinishedAlarms = async () => {
 
         if (error) throw error;
 
-        return alarms;
+        return alarms as Alarm[];
     } catch (e) {
         console.error("Error in getFinishedAlarms:", e);
         return null;
@@ -209,9 +208,8 @@ export const getAlarmById = async (id: string) => {
     try {
         const supabase = createAdminClient();
 
-        // @ts-ignore
         const {data: alarms, error} = await supabase
-            .from<string, Alarm>('Alarms')
+            .from('Alarms')
             .select('*')
             .eq('id', id)
             .limit(1)
@@ -219,7 +217,7 @@ export const getAlarmById = async (id: string) => {
 
         if (error) throw error;
 
-        return alarms;
+        return alarms as Alarm[];
     } catch (e) {
         console.error("Error in getAlarmById:", e);
         return null;

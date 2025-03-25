@@ -9,6 +9,8 @@ import Link from "next/link";
 export default async function AlarmPage({params}: { params: Promise<{ id: string }> }) {
 
     const {id} = await params;
+    const alarmId = id ? Number(id) : null;
+
     const latest_alarm = await getLatestAlarm();
 
     if (latest_alarm && 2 !== latest_alarm.status) {
@@ -28,7 +30,7 @@ export default async function AlarmPage({params}: { params: Promise<{ id: string
         )
     }
 
-    const alarm = id ? await getAlarmById(id) : latest_alarm;
+    const alarm = alarmId ? await getAlarmById(id) : latest_alarm;
     const archive = await getFinishedAlarms()
 
     return (
@@ -44,7 +46,7 @@ export default async function AlarmPage({params}: { params: Promise<{ id: string
                         <ul role="list" className="divide-y divide-gray-100 py-6">
                             {archive.map((alarm) => (
                                 <li key={alarm.id}
-                                    className={'flex justify-between gap-x-6 hover:text-red-700' + ((id ?? latest_alarm.id) == alarm.id ? 'font-bold text-red-800' : '')}>
+                                    className={'flex justify-between gap-x-6 hover:text-red-700' + ((alarmId ?? latest_alarm.id) == alarm.id ? 'font-bold text-red-800' : '')}>
                                     <Link href={`/larm/${alarm.id}`}
                                           className="flex w-full justify-between gap-x-6 py-5">
                                         <div className="flex flex-row gap-2">
@@ -52,14 +54,13 @@ export default async function AlarmPage({params}: { params: Promise<{ id: string
                                             <div className="max-w-64 truncate">{alarm.location}</div>
                                         </div>
                                         <div className="flex flex-row gap-2">
-                                            <div>{prettyDate(alarm.created_at, {date: true})}</div>
+                                            <div>{prettyDate(alarm.created_at ?? '', {date: true})}</div>
                                         </div>
                                     </Link>
                                 </li>
                             ))}
                         </ul>
                     </div>
-
                 }
             </div>
         </>

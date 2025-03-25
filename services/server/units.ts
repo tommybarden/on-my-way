@@ -19,9 +19,8 @@ export const unitStarting = async (unit: string) => {
 
         const alarm_id = current_alarm?.id;
 
-        // @ts-ignore
         const {data: already_left} = await supabase
-            .from<string, Alarm>('Unit_starts')
+            .from('Unit_starts')
             .select('id')
             .eq('alarm_id', alarm_id)
             .eq('unit', unit)
