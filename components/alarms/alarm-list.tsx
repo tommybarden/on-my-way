@@ -1,5 +1,5 @@
-import { getFinishedAlarms } from "@/services/server/alarms";
-import { prettyDate } from "@/utils/helpers";
+import {getFinishedAlarms} from "@/services/server/alarms";
+import {prettyDate} from "@/utils/helpers";
 
 export default async function AlarmList() {
 
@@ -23,8 +23,8 @@ export default async function AlarmList() {
                         </div>
 
                         <div className="shrink-0 text-right">
-                            <p>{prettyDate(alarm.created_at, { date: true })}</p>
-                            <p>{prettyDate(alarm.created_at, { time: true })}</p>
+                            <p>{prettyDate(alarm.created_at ?? '', {date: true})}</p>
+                            <p>{prettyDate(alarm.created_at ?? '', {time: true})}</p>
                         </div>
                     </li>
                 ))}
