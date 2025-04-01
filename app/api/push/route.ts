@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
     const messages = [
-        { title: "J15 startar inte", body: "5 testare kvitterade" },
-        { title: "Absolut inte backade", body: "Testar bara" },
-        { title: "Absolut inte ett nytt larm", body: "Testar bara push" },
+        { title: "TEST", body: "Testar bara" },
+        { title: "Ett test", body: "Testar bara" },
+        { title: "Testing testing!", body: "Testar bara push" },
     ];
 
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
