@@ -21,38 +21,44 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
             if (confirmed) {
                 const calculatedData = calculateConfirmed(confirmed);
                 setConfirmed(calculatedData);
+                // setConfirmed(prevData => [...calculateConfirmed(prevData)]);
             }
         };
 
         fetchConfirmed();
 
         const subscription = subscribeToConfirmed((payload) => {
-            const newData = payload.new;
-            const oldData = payload.old;
-
-            setConfirmed((prevData) => {
-
-                if (prevData.length < 1) {
-                    fetchConfirmed();
-                }
-
-                if (newData && oldData) {
-                    // Update
-                    return calculateConfirmed(
-                        prevData.map(item => item.id === oldData.id ? newData : item)
-                    );
-                }
-                if (newData) {
-                    // Add new one
-                    return calculateConfirmed([...prevData, newData]);
-                }
-                if (oldData) {
-                    // Remove deleted
-                    return calculateConfirmed(prevData.filter(item => item.id !== oldData.id));
-                }
-                return prevData;
-            });
+            console.log("Ny kvittering, hämtar hela listan...", payload);
+            fetchConfirmed();
         });
+
+        // const subscription = subscribeToConfirmed((payload) => {
+        //     const newData = payload.new;
+        //     const oldData = payload.old;
+
+        //     setConfirmed((prevData) => {
+
+        //         if (prevData.length < 1) {
+        //             fetchConfirmed();
+        //         }
+
+        //         if (newData && oldData) {
+        //             // Update
+        //             return calculateConfirmed(
+        //                 prevData.map(item => item.id === oldData.id ? newData : item)
+        //             );
+        //         }
+        //         if (newData) {
+        //             // Add new one
+        //             return calculateConfirmed([...prevData, newData]);
+        //         }
+        //         if (oldData) {
+        //             // Remove deleted
+        //             return calculateConfirmed(prevData.filter(item => item.id !== oldData.id));
+        //         }
+        //         return prevData;
+        //     });
+        // });
 
         // Decrease every second
         const interval = setInterval(() => {
