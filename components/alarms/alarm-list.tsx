@@ -14,7 +14,7 @@ export default async function AlarmList() {
             <div className="lg:text-5xl xl:text-6xl text-center pb-4">Senaste larm</div>
 
             <ul className="divide-y divide-gray-200 space-y-8 lg:text-2xl xl:text-3xl" role="list">
-                {alarms.map((alarm) => (
+                {alarms.slice(0, 8).map((alarm) => (
                     <li key={alarm.id} className="flex items-center justify-between py-8 pb-2">
 
                         <div className="min-w-0 flex-1">
