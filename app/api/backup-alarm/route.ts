@@ -1,7 +1,7 @@
 import { sendNotification } from "@/services/server/notifications";
 import { NextResponse } from "next/server";
 import { writeToLog } from "@/services/server/log";
-//import { upsertAlarm } from "@/services/server/alarms";
+import { upsertAlarm } from "@/services/server/alarms";
 
 export async function POST(request: Request) {
     const apiKey = request.headers.get("x-api-key");
@@ -17,13 +17,13 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 400 });
         }
 
+        const alarmResult = await upsertAlarm({});
+        if (!alarmResult) throw new Error("Failed to create alarm");
+
         await writeToLog('SMS recieved from ' + unit, JSON.stringify(sms))
 
-        //const alarmResult = await upsertAlarm({});
-        //if (!alarmResult) throw new Error("Failed to create alarm");
-
         try {
-            const result = await sendNotification('SYSTEMTEST', 'Ålarm-backup');
+            const result = await sendNotification('Nytt larm!', 'Ålarm-backup');
             return NextResponse.json({ message: "Push-notiser skickade!", result }, { status: 200 });
         } catch (err) {
             console.error("❌ Fel vid skickning av notiser:", err);
