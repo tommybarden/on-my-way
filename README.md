@@ -70,7 +70,7 @@ For deployment, you can use Vercel:
 
 ## License
 
-This app is free to use but may not be commercialized.
+License: Volunteer License v1.0 — Free for volunteer/non-profit use. Contact tommy@dalkarby.com for commercial licensing.
 
 ## Feedback and Contributions
 
