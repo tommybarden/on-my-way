@@ -20,7 +20,12 @@ export default function ConfirmButtons(props: { userId: string, alarmId: number;
                     const coordsArray = [pos.coords.longitude, pos.coords.latitude];
 
                     getStationETA(coordsArray.join()).then((eta) => {
-                        setETA(eta ? eta : null);
+                        if (typeof eta === "number") {
+                            setETA(eta);
+                        } else {
+                            console.warn("ETA kunde inte beräknas – sätter till 1 minut");
+                            setETA(1); // fallback
+                        }
                         setLoading(false);
                     });
                 },
