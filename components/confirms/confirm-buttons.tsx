@@ -71,7 +71,9 @@ export default function ConfirmButtons(props: { userId: string, alarmId: number;
     }
 
     useEffect(() => {
-        updateETA();
+        if (1) {
+            updateETA();
+        }
     }, []);
 
     return (
@@ -82,7 +84,7 @@ export default function ConfirmButtons(props: { userId: string, alarmId: number;
                 <Button onClick={() => {
                     confirm(ETA ?? 0)
                 }} type="button" variant={"destructive"} size={"lg"} disabled={submitting || loading || ETA === null}>
-                    <p className="text-2xl">{loading ? "Beräknar körtid..." : ETA ? `ETA: ${ETA} minuter` : 'Kunde inte hämta position'}</p>
+                    <p className="text-2xl hidden">{loading ? "Beräknar körtid..." : ETA ? `ETA: ${ETA} minuter` : 'Kunde inte hämta position'}</p>
                 </Button>
                 <Button onClick={() => {
                     confirm(5)
