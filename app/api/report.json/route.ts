@@ -122,7 +122,6 @@ export async function GET() {
         responseTime = Math.floor(responseMs / (1000 * 60));
     }
 
-
     return NextResponse.json({
         alarm: {
             ...latest_alarm,
@@ -133,7 +132,7 @@ export async function GET() {
     }, {
         status: 200,
         headers: {
-            'Access-Control-Allow-Origin': 'https://www.raddning.ax',
+            'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Access-Control-Allow-Credentials': 'true',
@@ -146,7 +145,7 @@ export async function OPTIONS() {
     return new Response(null, {
         status: 200,
         headers: {
-            'Access-Control-Allow-Origin': 'https://www.raddning.ax',
+            'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type',
         },
