@@ -101,12 +101,36 @@ export async function GET() {
         }
     });
 
-    const data = {
-        alarm: latest_alarm,
-        units: groupedUnits
+    // Remove units with no personnel
+    Object.keys(groupedUnits).forEach(unitKey => {
+        if (groupedUnits[unitKey].personnel.length === 0) {
+            delete groupedUnits[unitKey];
+        }
+    });
+
+    // Calculate alarm duration in hours
+    const alarmStartTime = new Date(latest_alarm.created_at);
+    const currentTime = new Date();
+    const durationMs = currentTime.getTime() - alarmStartTime.getTime();
+    const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+
+    // Calculate response time to first unit in minutes
+    let responseTime = null;
+    if (sortedUnits.length > 0) {
+        const firstUnitLeft = sortedUnits[0].left;
+        const responseMs = firstUnitLeft.getTime() - alarmStartTime.getTime();
+        responseTime = Math.floor(responseMs / (1000 * 60));
     }
 
-    const res = NextResponse.json({data}, {status: 200});
+
+    const res = NextResponse.json({
+        alarm: {
+            ...latest_alarm,
+            duration: durationHours,
+            response_time: responseTime
+        },
+        units: groupedUnits
+    }, {status: 200});
     res.headers.set('Access-Control-Allow-Origin', 'https://raddning.ax')
 
     return res
