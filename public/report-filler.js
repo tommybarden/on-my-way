@@ -31,7 +31,10 @@
     }
 
     // Main function
-    fetch(ENDPOINT_URL)
+    fetch(ENDPOINT_URL, {
+        credentials: "include",
+        method: "GET"
+    })
         .then(response => response.json())
         .then(data => fillForm(data))
         .catch(error => {

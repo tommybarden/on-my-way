@@ -132,7 +132,7 @@ export async function GET() {
     }, {
         status: 200,
         headers: {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'https://www.raddning.ax',
             'Access-Control-Allow-Methods': 'GET, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Access-Control-Allow-Credentials': 'true',
@@ -145,9 +145,9 @@ export async function OPTIONS() {
     return new Response(null, {
         status: 200,
         headers: {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'https://www.raddning.ax',
             'Access-Control-Allow-Methods': 'GET, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         },
     });
 }
