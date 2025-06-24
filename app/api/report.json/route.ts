@@ -1,9 +1,9 @@
-import {NextResponse} from "next/server";
-import {getLatestAlarm} from "@/services/server/alarms";
-import {getAllUsers, getCurrentUser} from "@/services/server/users";
-import {getConfirmed} from "@/services/client/alarms";
-import {getStartedUnits} from "@/services/client/units";
-import {User} from "@/utils/types";
+import { NextResponse } from "next/server";
+import { getLatestAlarm } from "@/services/server/alarms";
+import { getAllUsers, getCurrentUser } from "@/services/server/users";
+import { getConfirmed } from "@/services/client/alarms";
+import { getStartedUnits } from "@/services/client/units";
+import { User } from "@/utils/types";
 
 interface Personnel {
     name: string;
@@ -23,12 +23,12 @@ export async function GET() {
 
     const user = await getCurrentUser()
     if (!user) {
-        return NextResponse.json({error: 'Forbidden'}, {status: 403})
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
     const latest_alarm = await getLatestAlarm();
     if (!latest_alarm) {
-        return NextResponse.json({error: "No alarm found"}, {status: 500});
+        return NextResponse.json({ error: "No alarm found" }, { status: 500 });
     }
 
     const users: { [key: string]: User } = await getAllUsers();
@@ -130,8 +130,24 @@ export async function GET() {
             response_time: responseTime
         },
         units: groupedUnits
-    }, {status: 200});
-    res.headers.set('Access-Control-Allow-Origin', 'https://raddning.ax')
+    }, { status: 200 });
 
-    return res
+    // Set CORS headers
+    res.headers.set('Access-Control-Allow-Origin', 'https://raddning.ax');
+    res.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+
+    return res;
+}
+
+// Handle preflight OPTIONS request
+export async function OPTIONS() {
+    return new Response(null, {
+        status: 200,
+        headers: {
+            'Access-Control-Allow-Origin': 'https://raddning.ax',
+            'Access-Control-Allow-Methods': 'GET, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+        },
+    });
 }
