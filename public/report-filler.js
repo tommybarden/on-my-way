@@ -16,23 +16,75 @@
         return { date: dateStr, time: timeStr };
     }
 
+    // Determine alarm type based on description
+    function getAlarmType(description) {
+        const desc = description.toLowerCase();
+
+        // Check for Räddning types first (highest priority)
+        if (desc.includes('assistans')) return '430'; // Räddning - Assistans
+        if (desc.includes('fastklämd')) return '431'; // Räddning - Fastklämd
+        if (desc.includes('dykalarm')) return '432'; // Räddning - Dykalarm
+        if (desc.includes('kemalarm')) return '433'; // Räddning - Kemalarm
+
+        // Check for Personsökaralarm types
+        if (desc.includes('hissalarm')) return '401'; // Personsökaralarm - Hissalarm
+        if (desc.includes('djurräddning') && desc.includes('personsökar')) return '402'; // Personsökaralarm - Djurräddning
+
+        // Check for Grundalarm types (check before Litet Alarm)
+        if (desc.includes('grundalarm') || desc.includes('större') || desc.includes('allvarlig')) {
+            if (desc.includes('automatalarm')) return '421'; // Grundalarm - Automatalarm
+            if (desc.includes('byggnadsbrand')) return '422'; // Grundalarm - Byggnadsbrand
+            if (desc.includes('markbrand')) return '423'; // Grundalarm - Markbrand
+            if (desc.includes('fordonsbrand')) return '424'; // Grundalarm - Fordonsbrand
+            if (desc.includes('båtbrand') || desc.includes('fartygsbrand')) return '425'; // Grundalarm - Båt-/Fartygsbrand
+            return '420'; // Grundalarm (general)
+        }
+
+        // Check for Litet Alarm types
+        if (desc.includes('automatalarm')) return '411'; // Litet Alarm - Automatalarm
+        if (desc.includes('byggnadsbrand')) return '412'; // Litet Alarm - Byggnadsbrand
+        if (desc.includes('markbrand')) return '413'; // Litet Alarm - Markbrand
+        if (desc.includes('fordonsbrand')) return '414'; // Litet Alarm - Fordonsbrand
+        if (desc.includes('båtbrand')) return '415'; // Litet Alarm - Båtbrand
+        if (desc.includes('soteld')) return '417'; // Litet Alarm - Soteld
+        if (desc.includes('djurräddning')) return '418'; // Litet Alarm - Djurräddning
+        if (desc.includes('kontroll')) return '419'; // Litet Alarm - Kontrolluppdrag
+
+        // Special types
+        if (desc.includes('sjukvård')) return 'SJUKVARD'; // Sjukvård - Första insats
+        if (desc.includes('förstärkning')) return '440'; // Förstärkningsalarm
+        if (desc.includes('beredskap')) return '441'; // Beredskapsalarm
+
+        // Check for general Personsökaralarm
+        if (desc.includes('personsökar')) return '400'; // Personsökaralarm
+
+        // Default fallback - Litet Alarm general
+        return 'OVRIGT'; // Litet Alarm
+    }
+
     function fillForm(data) {
         const alarm = data.alarm;
         const units = data.units;
         const dateTime = formatDateTime(alarm.created_at);
 
+        if (alarm?.response_time) {
+            alarm.description += '\n\nUtryckningstid: ' + alarm?.response_time
+        }
+
         jQuery('[name="field_alarmreport_department"]').val('jomala_fbk');
-        jQuery('[name="field_alarmreport_type"]').val('411');
+        jQuery('[name="field_alarmreport_type"]').val(getAlarmType(alarm.description || ''));
         jQuery('[name="field_alarmreport_incident[0][value]"]').val(alarm.description || '');
         jQuery('[name="field_alarmreport_address[0][value]"]').val(alarm.location || '');
         jQuery('[name="field_alarmreport_date[0][value][date]"]').val(dateTime.date);
         jQuery('[name="field_alarmreport_date[0][value][time]"]').val(dateTime.time);
         jQuery('[name="field_alarmreport_unitmgr[0][value]"]').val('');
         jQuery('[name="field_alarmreport_description[0][value]"]').val(alarm.description || '');
-        jQuery('[name="field_alarmreport_author_name[0][value]"]').val('Automatisk rapport');
-        jQuery('[name="field_alarmreport_author_mail[0][value]"]').val('station@jfbk.ax');
+        jQuery('[name="field_alarmreport_author_name[0][value]"]').val('');
+        jQuery('[name="field_alarmreport_author_mail[0][value]"]').val('stationen@jfbk.ax');
 
-        alert('Formulär ifyllt med alarmdata');
+        alert('Klart! Vänligen fyll i de fält som saknas.');
+
+        jQuery('[name="field_alarmreport_unitmgr[0][value]"]').focus();
     }
 
     // Main function
