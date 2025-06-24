@@ -130,25 +130,5 @@ export async function GET(request: NextRequest) {
             response_time: responseTime
         },
         units: groupedUnits
-    }, {
-        status: 200,
-        headers: {
-            'Access-Control-Allow-Origin': 'https://www.raddning.ax',
-            'Access-Control-Allow-Methods': 'GET, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-            'Access-Control-Allow-Credentials': 'true',
-        }
-    });
-}
-
-// Handle preflight OPTIONS request
-export async function OPTIONS() {
-    return new Response(null, {
-        status: 200,
-        headers: {
-            'Access-Control-Allow-Origin': 'https://www.raddning.ax',
-            'Access-Control-Allow-Methods': 'GET, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        },
-    });
+    }, { status: 200 });
 }
