@@ -123,21 +123,22 @@ export async function GET() {
     }
 
 
-    const res = NextResponse.json({
+    return NextResponse.json({
         alarm: {
             ...latest_alarm,
             duration: durationHours,
             response_time: responseTime
         },
         units: groupedUnits
-    }, { status: 200 });
-
-    // Set CORS headers
-    res.headers.set('Access-Control-Allow-Origin', 'https://raddning.ax');
-    res.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.headers.set('Access-Control-Allow-Headers', 'Content-Type');
-
-    return res;
+    }, {
+        status: 200,
+        headers: {
+            'Access-Control-Allow-Origin': 'https://www.raddning.ax',
+            'Access-Control-Allow-Methods': 'GET, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            'Access-Control-Allow-Credentials': 'true',
+        }
+    });
 }
 
 // Handle preflight OPTIONS request
@@ -145,7 +146,7 @@ export async function OPTIONS() {
     return new Response(null, {
         status: 200,
         headers: {
-            'Access-Control-Allow-Origin': 'https://raddning.ax',
+            'Access-Control-Allow-Origin': 'https://www.raddning.ax',
             'Access-Control-Allow-Methods': 'GET, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type',
         },
