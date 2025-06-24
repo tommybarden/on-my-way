@@ -1,7 +1,12 @@
 (function () {
     'use strict';
 
-    const ENDPOINT_URL = '/api/report.json';
+    const scriptSrc = new URL(document.currentScript.src);
+    const urlParams = scriptSrc.searchParams;
+    const urlDomain = scriptSrc.origin;
+    const apiKey = urlParams.get('key');
+
+    const ENDPOINT_URL = urlDomain + '/api/report.json';
 
     // Format date/time for form
     function formatDateTime(dateString) {
@@ -32,8 +37,9 @@
 
     // Main function
     fetch(ENDPOINT_URL, {
-        credentials: "include",
-        method: "GET"
+        headers: {
+            'x-api-key': apiKey
+        }
     })
         .then(response => response.json())
         .then(data => fillForm(data))

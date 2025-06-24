@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getLatestAlarm } from "@/services/server/alarms";
 import { getAllUsers, getCurrentUser } from "@/services/server/users";
 import { getConfirmed } from "@/services/client/alarms";
@@ -19,11 +19,12 @@ interface GroupedUnits {
     [key: string]: Unit;
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
 
-    const user = await getCurrentUser()
-    if (!user) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    const apiKey = request.headers.get("x-api-key");
+
+    if (!apiKey || process.env.DEFAULT_USER_PASSWORD !== apiKey) {
+        return NextResponse.json({ error: "Unauthorized AF!" }, { status: 403 });
     }
 
     const latest_alarm = await getLatestAlarm();
