@@ -39,7 +39,7 @@ export async function GET() {
     }));
 
     // Sort units by departure time
-    const sortedUnits = units.sort((a, b) => a.left - b.left);
+    const sortedUnits = units.sort((a, b) => a.left.getTime() - b.left.getTime());
 
     // Create grouped structure
     const groupedUnits: GroupedUnits = {};
@@ -86,7 +86,7 @@ export async function GET() {
             // Find which unit they caught
             let assignedToUnit = false;
 
-            for (let unit of sortedUnits) {
+            for (const unit of sortedUnits) {
                 if (arrivalTime <= unit.left) {
                     groupedUnits[unit.unit].personnel.push(confirmationData);
                     assignedToUnit = true;
