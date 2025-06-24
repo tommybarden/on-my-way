@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getLatestAlarm } from "@/services/server/alarms";
-import { getAllUsers, getCurrentUser } from "@/services/server/users";
+import { getAllUsers } from "@/services/server/users";
 import { getConfirmed } from "@/services/client/alarms";
 import { getStartedUnits } from "@/services/client/units";
 import { User } from "@/utils/types";
