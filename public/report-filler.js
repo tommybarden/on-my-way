@@ -62,88 +62,53 @@
         return 'OVRIGT'; // Litet Alarm
     }
 
-    // Add units and personnel
-    function addUnitsAndPersonnel(units) {
-        const unitKeys = Object.keys(units).filter(key =>
-            units[key].personnel && units[key].personnel.length > 0
+    async function addUnitsAndPersonnel(units) {
+        // Helper function to wait
+        const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        // Process units with personnel using forEach with async
+        await Promise.all(
+            Object.entries(units).map(async ([unitKey, unit], unitIndex) => {
+                // Always add unit (no unit fields exist initially)
+                console.log('Adding units', unitKey);
+                jQuery('input[name="field_alarmreport_crew_ref_crew_add_more"]').trigger('mousedown');
+                await wait(1000);
+
+                // Set unit name
+                jQuery(`[name="field_alarmreport_crew_ref[${unitIndex}][subform][field_crew_unit][0][value]"]`).val(unitKey);
+
+                // Add all personnel using map
+                if (unit.personnel && unit.personnel.length > 0) {
+                    await Promise.all(
+                        unit.personnel.map(async (person, personIndex) => {
+                            // Always add person field
+                            console.log('Adding person', person.name);
+                            jQuery(`input[name="field_alarmreport_crew_ref_${unitIndex}_subform_field_crew_person_ref_person_add_more"]`).trigger('mousedown');
+                            await wait(1000);
+
+                            // Fill person data
+                            jQuery(`[name="field_alarmreport_crew_ref[${unitIndex}][subform][field_crew_person_ref][${personIndex}][subform][field_person_name][0][value]"]`).val(person.name);
+                            jQuery(`[name="field_alarmreport_crew_ref[${unitIndex}][subform][field_crew_person_ref][${personIndex}][subform][field_person_nr][0][value]"]`).val(person.number);
+
+                            // Set default values for time fields
+                            const timeFields = [
+                                'field_person_effort',
+                                'field_person_watch',
+                                'field_person_restore',
+                                'field_person_smokedive',
+                                'field_person_selfprotect'
+                            ];
+
+                            timeFields.forEach(field => {
+                                jQuery(`[name="field_alarmreport_crew_ref[${unitIndex}][subform][field_crew_person_ref][${personIndex}][subform][${field}][0][value]"]`).val(0);
+                            });
+                        })
+                    );
+                }
+            })
         );
 
-        if (unitKeys.length === 0) return;
-
-        let unitIndex = 0;
-
-        function processNextUnit() {
-            if (unitIndex >= unitKeys.length) {
-                console.log('All units and personnel added');
-                return;
-            }
-
-            const unitKey = unitKeys[unitIndex];
-            const unit = units[unitKey];
-            const personnel = unit.personnel;
-
-            // Add unit if not the first one (first unit field already exists)
-            if (unitIndex > 0) {
-                jQuery('input[name="field_alarmreport_crew_ref_crew_add_more"]').trigger('mousedown');
-
-                // Wait for unit to be added before continuing
-                setTimeout(() => {
-                    fillUnitData(unitKey, personnel, unitIndex);
-                }, 1000);
-            } else {
-                fillUnitData(unitKey, personnel, unitIndex);
-            }
-        }
-
-        function fillUnitData(unitKey, personnel, unitIdx) {
-            // Set unit name
-            jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_unit][0][value]"]`).val(unitKey);
-
-            // Add personnel (first person field already exists)
-            let personIndex = 0;
-
-            function addNextPerson() {
-                if (personIndex >= personnel.length) {
-                    unitIndex++;
-                    setTimeout(processNextUnit, 1000);
-                    return;
-                }
-
-                const person = personnel[personIndex];
-
-                // Add person if not the first one
-                if (personIndex > 0) {
-                    jQuery(`input[name="field_alarmreport_crew_ref_${unitIdx}_subform_field_crew_person_ref_person_add_more"]`).trigger('mousedown');
-
-                    // Wait for person field to be added
-                    setTimeout(() => {
-                        fillPersonData(person, unitIdx, personIndex);
-                    }, 1000);
-                } else {
-                    fillPersonData(person, unitIdx, personIndex);
-                }
-            }
-
-            function fillPersonData(person, unitIdx, personIdx) {
-                // Set person name
-                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_name][0][value]"]`).val(person.name);
-                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_nr][0][value]"]`).val(person.number);
-                
-                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_effort][0][value]"]`).val(0);
-                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_watch][0][value]"]`).val(0);
-                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_restore][0][value]"]`).val(0);
-
-                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_smokedive][0][value]"]`).val(0);
-                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_selfprotect][0][value]"]`).val(0);
-
-                personIndex++;
-                setTimeout(addNextPerson, 1000);
-            }
-
-            addNextPerson();
-        }
-
-        processNextUnit();
+        console.log('All units and personnel added');
     }
 
     function fillForm(data) {
@@ -166,13 +131,11 @@
         jQuery('[name="field_alarmreport_author_name[0][value]"]').val('');
         jQuery('[name="field_alarmreport_author_mail[0][value]"]').val('stationen@jfbk.ax');
 
-        setTimeout(() => {
-            addUnitsAndPersonnel(units);
-        }, 1000);
+        addUnitsAndPersonnel(units).then(() => {
+            alert('Klart! Vänligen fyll i de fält som saknas.');
+            jQuery('[name="field_alarmreport_unitmgr[0][value]"]').focus();
+        })
 
-        alert('Klart! Vänligen fyll i de fält som saknas.');
-
-        jQuery('[name="field_alarmreport_unitmgr[0][value]"]').focus();
     }
 
     // Main function
