@@ -13,7 +13,7 @@
         const date = new Date(dateString);
         const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
         const timeStr = date.toTimeString().substr(0, 5); // HH:MM
-        return { date: dateStr, time: timeStr };
+        return {date: dateStr, time: timeStr};
     }
 
     // Determine alarm type based on description
@@ -62,13 +62,98 @@
         return 'OVRIGT'; // Litet Alarm
     }
 
+    // Add units and personnel
+    function addUnitsAndPersonnel(units) {
+        const unitKeys = Object.keys(units).filter(key =>
+            units[key].personnel && units[key].personnel.length > 0
+        );
+
+        if (unitKeys.length === 0) return;
+
+        let unitIndex = 0;
+
+        function processNextUnit() {
+            if (unitIndex >= unitKeys.length) {
+                console.log('All units and personnel added');
+                return;
+            }
+
+            const unitKey = unitKeys[unitIndex];
+            const unit = units[unitKey];
+            const personnel = unit.personnel;
+
+            // Add unit if not the first one (first unit field already exists)
+            if (unitIndex > 0) {
+                jQuery('input[name="field_alarmreport_crew_ref_crew_add_more"]').trigger('mousedown');
+
+                // Wait for unit to be added before continuing
+                setTimeout(() => {
+                    fillUnitData(unitKey, personnel, unitIndex);
+                }, 500);
+            } else {
+                fillUnitData(unitKey, personnel, unitIndex);
+            }
+        }
+
+        function fillUnitData(unitKey, personnel, unitIdx) {
+            // Set unit name
+            jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_unit][0][value]"]`).val(unitKey);
+
+            // Add personnel (first person field already exists)
+            let personIndex = 0;
+
+            function addNextPerson() {
+                if (personIndex >= personnel.length) {
+                    unitIndex++;
+                    setTimeout(processNextUnit, 300);
+                    return;
+                }
+
+                const person = personnel[personIndex];
+
+                // Add person if not the first one
+                if (personIndex > 0) {
+                    jQuery(`input[name="field_alarmreport_crew_ref_${unitIdx}_subform_field_crew_person_ref_person_add_more"]`).trigger('mousedown');
+
+                    // Wait for person field to be added
+                    setTimeout(() => {
+                        fillPersonData(person, unitIdx, personIndex);
+                    }, 300);
+                } else {
+                    fillPersonData(person, unitIdx, personIndex);
+                }
+            }
+
+            function fillPersonData(person, unitIdx, personIdx) {
+                // Set person name
+                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_name][0][value]"]`).val(person.name);
+                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_nr][0][value]"]`).val(person.number);
+
+
+                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_effort][0][value]"]`).val(0);
+                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_watch][0][value]"]`).val(0);
+                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_restore][0][value]"]`).val(0);
+
+                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_smokedive][0][value]"]`).val(0);
+                jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_selfprotect][0][value]"]`).val(0);
+
+                personIndex++;
+                setTimeout(addNextPerson, 200);
+            }
+
+            addNextPerson();
+        }
+
+        processNextUnit();
+    }
+
     function fillForm(data) {
         const alarm = data.alarm;
         const units = data.units;
         const dateTime = formatDateTime(alarm.created_at);
 
         if (alarm?.response_time) {
-            alarm.description += '\n\nUtryckningstid: ' + alarm?.response_time
+            alarm.description += '\n\nUtryckningstid: ' + alarm?.response_time + ' minuter'
         }
 
         jQuery('[name="field_alarmreport_department"]').val('jomala_fbk');
@@ -81,6 +166,10 @@
         jQuery('[name="field_alarmreport_description[0][value]"]').val(alarm.description || '');
         jQuery('[name="field_alarmreport_author_name[0][value]"]').val('');
         jQuery('[name="field_alarmreport_author_mail[0][value]"]').val('stationen@jfbk.ax');
+
+        setTimeout(() => {
+            addUnitsAndPersonnel(units);
+        }, 1000);
 
         alert('Klart! Vänligen fyll i de fält som saknas.');
 

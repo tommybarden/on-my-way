@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getLatestAlarm } from "@/services/server/alarms";
-import { getAllUsers } from "@/services/server/users";
-import { getConfirmed } from "@/services/client/alarms";
-import { getStartedUnits } from "@/services/client/units";
-import { User } from "@/utils/types";
+import {NextRequest, NextResponse} from "next/server";
+import {getLatestAlarm} from "@/services/server/alarms";
+import {getAllUsers} from "@/services/server/users";
+import {getConfirmed} from "@/services/client/alarms";
+import {getStartedUnits} from "@/services/client/units";
+import {User} from "@/utils/types";
 
 interface Personnel {
     name: string;
@@ -24,12 +24,12 @@ export async function GET(request: NextRequest) {
     const apiKey = request.headers.get("x-api-key");
 
     if (!apiKey || process.env.DEFAULT_USER_PASSWORD !== apiKey) {
-        return NextResponse.json({ error: "Unauthorized AF!" }, { status: 403 });
+        return NextResponse.json({error: "Unauthorized AF!"}, {status: 403});
     }
 
     const latest_alarm = await getLatestAlarm();
     if (!latest_alarm) {
-        return NextResponse.json({ error: "No alarm found" }, { status: 500 });
+        return NextResponse.json({error: "No alarm found"}, {status: 500});
     }
 
     const users: { [key: string]: User } = await getAllUsers();
@@ -113,14 +113,14 @@ export async function GET(request: NextRequest) {
     const alarmStartTime = new Date(latest_alarm.created_at);
     const currentTime = new Date();
     const durationMs = currentTime.getTime() - alarmStartTime.getTime();
-    const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+    const durationHours = Math.round(durationMs / (1000 * 60 * 60) * 2) / 2;
 
     // Calculate response time to first unit in minutes
     let responseTime = null;
     if (sortedUnits.length > 0) {
         const firstUnitLeft = sortedUnits[0].left;
         const responseMs = firstUnitLeft.getTime() - alarmStartTime.getTime();
-        responseTime = Math.floor(responseMs / (1000 * 60));
+        responseTime = Math.round(responseMs / (1000 * 60) * 2) / 2;
     }
 
     return NextResponse.json({
@@ -130,5 +130,5 @@ export async function GET(request: NextRequest) {
             response_time: responseTime
         },
         units: groupedUnits
-    }, { status: 200 });
+    }, {status: 200});
 }
