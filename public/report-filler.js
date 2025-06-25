@@ -89,7 +89,7 @@
                 // Wait for unit to be added before continuing
                 setTimeout(() => {
                     fillUnitData(unitKey, personnel, unitIndex);
-                }, 500);
+                }, 1000);
             } else {
                 fillUnitData(unitKey, personnel, unitIndex);
             }
@@ -105,7 +105,7 @@
             function addNextPerson() {
                 if (personIndex >= personnel.length) {
                     unitIndex++;
-                    setTimeout(processNextUnit, 300);
+                    setTimeout(processNextUnit, 1000);
                     return;
                 }
 
@@ -118,7 +118,7 @@
                     // Wait for person field to be added
                     setTimeout(() => {
                         fillPersonData(person, unitIdx, personIndex);
-                    }, 300);
+                    }, 1000);
                 } else {
                     fillPersonData(person, unitIdx, personIndex);
                 }
@@ -128,8 +128,7 @@
                 // Set person name
                 jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_name][0][value]"]`).val(person.name);
                 jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_nr][0][value]"]`).val(person.number);
-
-
+                
                 jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_effort][0][value]"]`).val(0);
                 jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_watch][0][value]"]`).val(0);
                 jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_restore][0][value]"]`).val(0);
@@ -138,7 +137,7 @@
                 jQuery(`[name="field_alarmreport_crew_ref[${unitIdx}][subform][field_crew_person_ref][${personIdx}][subform][field_person_selfprotect][0][value]"]`).val(0);
 
                 personIndex++;
-                setTimeout(addNextPerson, 200);
+                setTimeout(addNextPerson, 1000);
             }
 
             addNextPerson();
