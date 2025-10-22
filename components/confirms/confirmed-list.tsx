@@ -132,8 +132,8 @@ export default function ConfirmedList(props: { users: Record<string, User>; alar
                                                 <span>{user?.smoke ?
                                                     <Flame className="w-5 h-5 opacity-50" fill="#FF4D00"
                                                         strokeWidth={0} /> : <span className='w-5 block' />}</span>
-                                                <span
-                                                    className="truncate max-w-full max-w-1/3">{user?.first_name} {user?.last_name}</span>
+                                                <a href={'tel:+' + user?.phone}
+                                                    className="truncate max-w-full max-w-1/3">{user?.first_name} {user?.last_name}</a>
 
                                             </div>
                                             <span style={{ fontFamily: 'Courier New, monospace' }}>

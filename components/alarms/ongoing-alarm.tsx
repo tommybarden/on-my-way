@@ -17,9 +17,9 @@ export default async function OngoingAlarm(props: { className?: string; }) {
             </div>
 
             <p className="text-2xl lg:text-6xl xl:text-8xl xl:mb-20">{current_alarm.location}</p>
-            <p className="my-6">{current_alarm.description}</p>
-            <p className="text-xl lg:text-3xl xl:text-5xl mb-3">Egna enheter: {filterUnits(current_alarm.units, true)}</p>
-            <p className="lg:mt-10">Andra enheter: {filterUnits(current_alarm.units, false)}</p>
+            <p className="my-4">{current_alarm.description}</p>
+            <p className="text-md lg:text-3xl xl:text-5xl mb-3">Egna enheter: {filterUnits(current_alarm.units, true)}</p>
+            <p className="lg:mt-10 hidden">Andra enheter: {filterUnits(current_alarm.units, false)}</p>
         </div>
     );
 }
