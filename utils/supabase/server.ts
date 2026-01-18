@@ -1,4 +1,4 @@
-import {createServerClient} from "@supabase/ssr";
+import {CookieOptions, createServerClient} from "@supabase/ssr";
 import {cookies} from "next/headers";
 import {createClient as createSupabaseClient} from "@supabase/supabase-js";
 
@@ -13,12 +13,13 @@ export const createClient = async () => {
                 getAll() {
                     return cookieStore.getAll();
                 },
-                setAll(cookiesToSet) {
+                setAll(cookiesToSet: {name:string, value:string, options:CookieOptions}[]) {
                     try {
                         cookiesToSet.forEach(({name, value, options}) => {
                             cookieStore.set(name, value, options);
                         });
                     } catch (error) {
+                        console.log(error)
                         // The `set` method was called from a Server Component.
                         // This can be ignored if you have middleware refreshing
                         // user sessions.
