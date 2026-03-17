@@ -130,7 +130,7 @@
 
         jQuery('[name="field_alarmreport_department"]').val('jomala_fbk');
         jQuery('[name="field_alarmreport_type"]').val(getAlarmType(alarm.description || ''));
-        jQuery('[name="field_alarmreport_incident[0][value]"]').val(alarm.description || '');
+        jQuery('[name="field_alarmreport_incident[0][value]"]').val((alarm.description || '').substring(0, 90));
         jQuery('[name="field_alarmreport_address[0][value]"]').val(alarm.location || '');
         jQuery('[name="field_alarmreport_date[0][value][date]"]').val(dateTime.date);
         jQuery('[name="field_alarmreport_date[0][value][time]"]').val(dateTime.time);
