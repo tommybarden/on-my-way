@@ -2,70 +2,63 @@ import {createAdminClient} from "@/utils/supabase/server";
 import {Alarm} from "@/utils/types";
 
 export const upsertAlarm = async (alarm: Partial<Alarm>) => {
-    try {
-        const supabase = createAdminClient();
+    const supabase = createAdminClient();
 
-        const defaultAlarm: Alarm = {
-            description: "Virve",
-            location: "Ingen plats angiven",
-            units: process.env.DEFAULT_UNITS?.trim() || 'J11, J12, J14, J15, J17, M3, POLIS',
-            geo: "",
-            status: 1,
-        };
+    const defaultAlarm: Alarm = {
+        description: "Virve",
+        location: "Ingen plats angiven",
+        units: process.env.DEFAULT_UNITS?.trim() || 'J11, J12, J14, J15, J17, M3, POLIS',
+        geo: "",
+        status: 1,
+    };
 
-        // Remove unset rows
-        const alarmData = Object.fromEntries(
-            Object.entries(alarm).filter(([_, value]) =>
-                value !== undefined && value !== null && value !== ""
-            )
-        );
+    const alarmData = Object.fromEntries(
+        Object.entries(alarm).filter(([_, v]) =>
+            v !== undefined && v !== null && v !== ""
+        )
+    );
 
-        const {data: current_alarm, error} = await supabase
-            .from('Alarms')
-            .select('*')
-            .eq('status', 1)
-            .order('created_at', {ascending: false})
-            .limit(1)
-            .maybeSingle();
+    const recently = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
-        if (error) {
-            console.error("Error fetching current alarm:", error);
-            throw error;
-        }
+    // 1. Always try update first
+    const {data: updated, error: updateError} = await supabase
+        .from('Alarms')
+        .update(alarmData)
+        .eq('status', 1)
+        .gte('created_at', recently)
+        .select();
 
-        if (!current_alarm) {
-            const {data, error} = await supabase
+    if (updateError) throw updateError;
+
+    if (updated && updated.length > 0) {
+        return updated;
+    }
+
+    // 2. If nothing updated → try create
+    const {data: inserted, error: insertError} = await supabase
+        .from('Alarms')
+        .insert([{...defaultAlarm, ...alarmData}])
+        .select();
+
+    if (insertError) {
+        if (insertError.code === '23505') {
+            // lost race → someone else created it → retry update once
+            const {data: retry, error: retryError} = await supabase
                 .from('Alarms')
-                .insert([{...defaultAlarm, ...alarmData}])
+                .update(alarmData)
+                .eq('status', 1)
+                .gte('created_at', recently)
                 .select();
 
-            if (error) throw error;
-            return data;
+            if (retryError) throw retryError;
+            return retry;
         }
 
-        // Update the existing alarm
-        const updateData = {...alarmData};
-
-        for (const key of Object.keys(current_alarm) as Array<keyof Alarm>) {
-            if (current_alarm[key] === defaultAlarm[key] && alarm[key] !== undefined) {
-                updateData[key] = alarm[key];
-            }
-        }
-
-        const {data, error: updateError} = await supabase
-            .from('Alarms')
-            .update(updateData)
-            .eq('id', current_alarm.id)
-            .select();
-
-        if (updateError) throw updateError;
-        return data;
-
-    } catch (e) {
-        console.error("Error in upsertAlarm:", e);
-        return null;
+        throw insertError;
     }
-}
+
+    return inserted;
+};
 
 export const insertAlarm = async (alarm: Partial<Alarm>) => {
     const supabase = createAdminClient();

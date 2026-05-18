@@ -1,7 +1,7 @@
-import { getCurrentUser } from "@/services/server/users";
-import { redirect } from "next/navigation";
+import {getCurrentUser} from "@/services/server/users";
+import {redirect} from "next/navigation";
 
-export default async function Layout({ children, }: {
+export default async function Layout({children,}: {
     children: React.ReactNode;
 }) {
 
@@ -12,7 +12,8 @@ export default async function Layout({ children, }: {
     }
 
     return (
-        <div className="dashboard md:w-screen w-auto px-6 flex flex-col xl:flex-row gap-2 items-start justify-around ">
+        <div
+            className="dashboard overflow-hidden md:w-screen w-auto px-6 flex flex-col xl:flex-row gap-2 items-start justify-around ">
             {children}
         </div>
     );

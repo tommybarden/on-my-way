@@ -30,8 +30,6 @@ export default async function DashboardPage() {
                         <UsersList users={users ?? []}/>
                     </div>
                 </div>
-
-
             </>
         )
     }
@@ -55,6 +53,5 @@ export default async function DashboardPage() {
                 />
             </div>
         </>
-
     );
 }
